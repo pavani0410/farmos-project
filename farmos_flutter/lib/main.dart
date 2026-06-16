@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/farms_screen.dart';
-import 'screens/plots_screen.dart';
 import 'screens/leaf_detection_screen.dart';
 
 void main() {
@@ -44,7 +43,6 @@ class _AppShellState extends State<AppShell> {
   final List<Widget> _screens = const [
     DashboardScreen(),
     FarmsScreen(),
-    PlotsScreen(),
     LeafDetectionScreen(),
   ];
 
@@ -71,8 +69,7 @@ class _AppShellState extends State<AppShell> {
               children: [
                 _NavItem(icon: Icons.home_rounded, label: 'Home', index: 0, selected: _selectedIndex, onTap: (i) => setState(() => _selectedIndex = i)),
                 _NavItem(icon: Icons.agriculture_rounded, label: 'Farms', index: 1, selected: _selectedIndex, onTap: (i) => setState(() => _selectedIndex = i)),
-                _NavItem(icon: Icons.map_rounded, label: 'Plots', index: 2, selected: _selectedIndex, onTap: (i) => setState(() => _selectedIndex = i)),
-                _NavItem(icon: Icons.biotech_rounded, label: 'Leaf AI', index: 3, selected: _selectedIndex, onTap: (i) => setState(() => _selectedIndex = i)),
+                _NavItem(icon: Icons.biotech_rounded, label: 'Leaf AI', index: 2, selected: _selectedIndex, onTap: (i) => setState(() => _selectedIndex = i)),
               ],
             ),
           ),

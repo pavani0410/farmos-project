@@ -67,7 +67,9 @@ class _Segment {
 
 // ── main screen ───────────────────────────────────────────────────────────────
 class PlotsScreen extends StatefulWidget {
-  const PlotsScreen({super.key});
+  final Farm farm;
+  const PlotsScreen({super.key, required this.farm});
+
   @override
   State<PlotsScreen> createState() => _PlotsScreenState();
 }
@@ -75,8 +77,6 @@ class PlotsScreen extends StatefulWidget {
 class _PlotsScreenState extends State<PlotsScreen>
     with SingleTickerProviderStateMixin {
   late TabController _tabCtrl;
-  List<Farm> _farms = [];
-  Farm? _selectedFarm;
   List<_PlotData> _plots = [];
   bool _loading = true;
 
@@ -84,31 +84,13 @@ class _PlotsScreenState extends State<PlotsScreen>
   void initState() {
     super.initState();
     _tabCtrl = TabController(length: 2, vsync: this);
-    _loadFarms();
+    _loadPlots(widget.farm.id);
   }
 
   @override
   void dispose() {
     _tabCtrl.dispose();
     super.dispose();
-  }
-
-  Future<void> _loadFarms() async {
-    try {
-      final data = await ApiService.getFarms();
-      final farms = data.map((f) => Farm.fromJson(f)).toList();
-      setState(() {
-        _farms = farms;
-        if (farms.isNotEmpty) {
-          _selectedFarm = farms[0];
-          _loadPlots(farms[0].id);
-        } else {
-          _loading = false;
-        }
-      });
-    } catch (e) {
-      setState(() => _loading = false);
-    }
   }
 
   Future<void> _loadPlots(int farmId) async {
@@ -142,29 +124,50 @@ class _PlotsScreenState extends State<PlotsScreen>
   Future<void> _savePlot(String name, String soil, List<Offset> pts,
       double m2, double acres) async {
     final pointsJson = pts.map((p) => {'x': p.dx, 'y': p.dy}).toList();
-    await ApiService.createPlot(_selectedFarm!.id, {
+    await ApiService.createPlot(widget.farm.id, {
       'name': name,
       'soilType': soil,
       'areaM2': m2,
       'areaAcres': acres,
       'polygonPoints': jsonEncode(pointsJson),
     });
-    await _loadPlots(_selectedFarm!.id);
+    await _loadPlots(widget.farm.id);
   }
 
   Future<void> _deletePlot(int plotId) async {
-    await ApiService.deletePlot(_selectedFarm!.id, plotId);
-    await _loadPlots(_selectedFarm!.id);
+    await ApiService.deletePlot(widget.farm.id, plotId);
+    await _loadPlots(widget.farm.id);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF4F6F3),
+      appBar: AppBar(
+        backgroundColor: const Color(0xFFF4F6F3),
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_rounded, color: Color(0xFF1B4332)),
+          onPressed: () => Navigator.pop(context),
+        ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text('PLOT MAPPER',
+              style: TextStyle(fontSize: 10, fontWeight: FontWeight.w600,
+                color: Colors.grey.shade500, letterSpacing: 1.2)),
+            Text(widget.farm.name,
+              style: const TextStyle(fontSize: 17,
+                fontWeight: FontWeight.w700, color: Color(0xFF1B4332))),
+          ],
+        ),
+        centerTitle: false,
+      ),
       body: SafeArea(
+        top: false,
         child: Column(
           children: [
-            _buildHeader(),
             // tab bar
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
@@ -216,60 +219,9 @@ class _PlotsScreenState extends State<PlotsScreen>
       ),
     );
   }
-
-  Widget _buildHeader() {
-    return Padding(
-      padding: const EdgeInsets.fromLTRB(20, 16, 20, 0),
-      child: Row(
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text('PLOT MAPPER',
-                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600,
-                    color: Colors.grey.shade500, letterSpacing: 1.2)),
-                Text(_selectedFarm?.name ?? 'No farm selected',
-                  style: const TextStyle(fontSize: 20,
-                    fontWeight: FontWeight.w700, color: Color(0xFF1B4332))),
-              ],
-            ),
-          ),
-          if (_farms.isNotEmpty)
-            PopupMenuButton<Farm>(
-              onSelected: (farm) {
-                setState(() => _selectedFarm = farm);
-                _loadPlots(farm.id);
-              },
-              itemBuilder: (ctx) => _farms
-                .map((f) => PopupMenuItem(value: f, child: Text(f.name)))
-                .toList(),
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12, vertical: 6),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(8),
-                  border: Border.all(color: Colors.grey.shade200),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(_selectedFarm?.name ?? 'Select',
-                      style: const TextStyle(fontSize: 12,
-                        color: Color(0xFF1B4332), fontWeight: FontWeight.w500)),
-                    const SizedBox(width: 4),
-                    Icon(Icons.expand_more_rounded,
-                      size: 16, color: Colors.grey.shade500),
-                  ],
-                ),
-              ),
-            ),
-        ],
-      ),
-    );
-  }
 }
+
+
 
 // ══════════════════════════════════════════════════════════════════════════════
 // MODE 1 — MARKER PLACEMENT
@@ -1379,7 +1331,6 @@ class _SketchModeState extends State<_SketchMode> {
                   : const Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('🔬', style: TextStyle(fontSize: 16)),
                         SizedBox(width: 8),
                         Text('Digitize Sketch',
                           style: TextStyle(fontSize: 13,

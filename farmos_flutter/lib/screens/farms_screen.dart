@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../api/api_service.dart';
 import '../models/farm.dart';
+import 'plots_screen.dart';
 
 class FarmsScreen extends StatefulWidget {
   const FarmsScreen({super.key});
@@ -198,9 +199,20 @@ class _FarmsScreenState extends State<FarmsScreen> {
                         itemCount: farms.length,
                         itemBuilder: (context, index) {
                           final farm = farms[index];
-                          return _FarmCard(
-                            farm: farm,
-                            onDelete: () => _confirmDelete(context, farm),
+                          return GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (ctx) => PlotsScreen(farm: farm),
+                                ),
+                              );
+                            },
+                            child: _FarmCard(
+                              farm: farm,
+                              onDelete: () => _confirmDelete(context, farm),
+                            ),
                           );
                         },
                       ),

@@ -45,6 +45,9 @@ app.*.map.json
 /android/app/release
 
 # API Keys
-farmos_flutter/.env
+# farmos_flutter/.env
 farmos_flutter/lib/config/secrets.dart
+.gitignore
+
+
 

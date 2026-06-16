@@ -420,18 +420,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const SizedBox(height: 10),
 
                     // plot chips
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Row(
-                        children: [
-                          _PlotChip(label: 'Plot A · Wheat · 48 ac', color: const Color(0xFF52B788)),
-                          const SizedBox(width: 8),
-                          _PlotChip(label: 'Plot B · Corn · 32 ac', color: const Color(0xFFD4A017)),
-                          const SizedBox(width: 8),
-                          _PlotChip(label: 'Plot C · Rice · 20 ac', color: const Color(0xFF2196F3)),
-                        ],
-                      ),
-                    ),
+                    
 
                     const SizedBox(height: 24),
                   ],
