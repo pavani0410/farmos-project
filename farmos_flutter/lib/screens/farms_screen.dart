@@ -14,6 +14,7 @@ class _FarmsScreenState extends State<FarmsScreen> {
   List<Farm> farms = [];
   bool loading = true;
   bool showForm = false;
+  Farm? editingFarm;
 
   final nameController = TextEditingController();
   final acresController = TextEditingController();
@@ -25,6 +26,14 @@ class _FarmsScreenState extends State<FarmsScreen> {
     fetchFarms();
   }
 
+  @override
+  void dispose() {
+    nameController.dispose();
+    acresController.dispose();
+    locationController.dispose();
+    super.dispose();
+  }
+
   Future<void> fetchFarms() async {
     try {
       final data = await ApiService.getFarms();
@@ -34,28 +43,71 @@ class _FarmsScreenState extends State<FarmsScreen> {
       });
     } catch (e) {
       setState(() => loading = false);
+      debugPrint('Error loading farms: $e');
     }
   }
 
-  Future<void> createFarm() async {
-    if (nameController.text.isEmpty ||
-        acresController.text.isEmpty ||
-        locationController.text.isEmpty) return;
+  Future<void> saveFarm() async {
+    final name = nameController.text.trim();
+    final acresText = acresController.text.trim();
+    final location = locationController.text.trim();
+
+    if (name.isEmpty || acresText.isEmpty || location.isEmpty) return;
+
+    final acres = double.tryParse(acresText);
+    if (acres == null) return;
 
     try {
-      await ApiService.createFarm({
-        'name': nameController.text,
-        'acres': double.parse(acresController.text),
-        'location': locationController.text,
-      });
-      nameController.clear();
-      acresController.clear();
-      locationController.clear();
-      setState(() => showForm = false);
+      final farmData = {
+        'name': name,
+        'acres': acres,
+        'location': location,
+      };
+
+      if (editingFarm == null) {
+        await ApiService.createFarm(farmData);
+      } else {
+        await ApiService.updateFarm(editingFarm!.id, farmData);
+      }
+
+      clearForm();
       fetchFarms();
     } catch (e) {
-      debugPrint('Error: $e');
+      debugPrint('Error saving farm: $e');
     }
+  }
+
+  void clearForm() {
+    nameController.clear();
+    acresController.clear();
+    locationController.clear();
+
+    setState(() {
+      editingFarm = null;
+      showForm = false;
+    });
+  }
+
+  void startNewFarm() {
+    nameController.clear();
+    acresController.clear();
+    locationController.clear();
+
+    setState(() {
+      editingFarm = null;
+      showForm = true;
+    });
+  }
+
+  void startEditFarm(Farm farm) {
+    nameController.text = farm.name;
+    acresController.text = farm.acres.toString();
+    locationController.text = farm.location;
+
+    setState(() {
+      editingFarm = farm;
+      showForm = true;
+    });
   }
 
   Future<void> deleteFarm(int id) async {
@@ -63,7 +115,7 @@ class _FarmsScreenState extends State<FarmsScreen> {
       await ApiService.deleteFarm(id);
       fetchFarms();
     } catch (e) {
-      debugPrint('Error deleting: $e');
+      debugPrint('Error deleting farm: $e');
     }
   }
 
@@ -75,8 +127,6 @@ class _FarmsScreenState extends State<FarmsScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-
-            // header
             Padding(
               padding: const EdgeInsets.all(20),
               child: Row(
@@ -85,36 +135,45 @@ class _FarmsScreenState extends State<FarmsScreen> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('MY FARMS',
+                      Text(
+                        'MY FARMS',
                         style: TextStyle(
-                          fontSize: 11, fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade500, letterSpacing: 1.2,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.grey.shade500,
+                          letterSpacing: 1.2,
                         ),
                       ),
-                      const Text('Farm Management',
+                      const Text(
+                        'Farm Management',
                         style: TextStyle(
-                          fontSize: 22, fontWeight: FontWeight.w700,
+                          fontSize: 22,
+                          fontWeight: FontWeight.w700,
                           color: Color(0xFF1B4332),
                         ),
                       ),
                     ],
                   ),
                   GestureDetector(
-                    onTap: () => setState(() => showForm = !showForm),
+                    onTap: startNewFarm,
                     child: Container(
-                      width: 40, height: 40,
+                      width: 40,
+                      height: 40,
                       decoration: BoxDecoration(
                         color: const Color(0xFF1B4332),
                         borderRadius: BorderRadius.circular(12),
                       ),
-                      child: const Icon(Icons.add_rounded, color: Colors.white, size: 22),
+                      child: const Icon(
+                        Icons.add_rounded,
+                        color: Colors.white,
+                        size: 22,
+                      ),
                     ),
                   ),
                 ],
               ),
             ),
 
-            // add farm form
             if (showForm)
               Container(
                 margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -122,38 +181,61 @@ class _FarmsScreenState extends State<FarmsScreen> {
                 decoration: BoxDecoration(
                   color: Colors.white,
                   borderRadius: BorderRadius.circular(16),
-                  boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.06), blurRadius: 10)],
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.06),
+                      blurRadius: 10,
+                    ),
+                  ],
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    const Text('New Farm',
-                      style: TextStyle(
-                        fontSize: 14, fontWeight: FontWeight.w700,
+                    Text(
+                      editingFarm == null ? 'New Farm' : 'Edit Farm',
+                      style: const TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.w700,
                         color: Color(0xFF1B4332),
                       ),
                     ),
                     const SizedBox(height: 12),
-                    _FormField(controller: nameController, label: 'Farm Name', hint: 'e.g. My Avocado Farm'),
+                    _FormField(
+                      controller: nameController,
+                      label: 'Farm Name',
+                      hint: 'e.g. My Avocado Farm',
+                    ),
                     const SizedBox(height: 10),
-                    _FormField(controller: acresController, label: 'Total Acres', hint: 'e.g. 40', isNumber: true),
+                    _FormField(
+                      controller: acresController,
+                      label: 'Total Acres',
+                      hint: 'e.g. 40',
+                      isNumber: true,
+                    ),
                     const SizedBox(height: 10),
-                    _FormField(controller: locationController, label: 'Location', hint: 'e.g. Karnataka'),
+                    _FormField(
+                      controller: locationController,
+                      label: 'Location',
+                      hint: 'e.g. Karnataka',
+                    ),
                     const SizedBox(height: 14),
                     Row(
                       children: [
                         Expanded(
                           child: GestureDetector(
-                            onTap: createFarm,
+                            onTap: saveFarm,
                             child: Container(
                               padding: const EdgeInsets.symmetric(vertical: 12),
                               decoration: BoxDecoration(
                                 color: const Color(0xFF1B4332),
                                 borderRadius: BorderRadius.circular(10),
                               ),
-                              child: const Center(
-                                child: Text('Save Farm',
-                                  style: TextStyle(
+                              child: Center(
+                                child: Text(
+                                  editingFarm == null
+                                      ? 'Save Farm'
+                                      : 'Update Farm',
+                                  style: const TextStyle(
                                     color: Colors.white,
                                     fontWeight: FontWeight.w600,
                                     fontSize: 13,
@@ -165,15 +247,22 @@ class _FarmsScreenState extends State<FarmsScreen> {
                         ),
                         const SizedBox(width: 8),
                         GestureDetector(
-                          onTap: () => setState(() => showForm = false),
+                          onTap: clearForm,
                           child: Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 20,
+                              vertical: 12,
+                            ),
                             decoration: BoxDecoration(
                               border: Border.all(color: Colors.grey.shade300),
                               borderRadius: BorderRadius.circular(10),
                             ),
-                            child: Text('Cancel',
-                              style: TextStyle(color: Colors.grey.shade600, fontSize: 13),
+                            child: Text(
+                              'Cancel',
+                              style: TextStyle(
+                                color: Colors.grey.shade600,
+                                fontSize: 13,
+                              ),
                             ),
                           ),
                         ),
@@ -185,38 +274,43 @@ class _FarmsScreenState extends State<FarmsScreen> {
 
             if (showForm) const SizedBox(height: 16),
 
-            // farms list
             Expanded(
               child: loading
-                ? const Center(child: CircularProgressIndicator(color: Color(0xFF1B4332)))
-                : farms.isEmpty
-                  ? _EmptyState(onAdd: () => setState(() => showForm = true))
-                  : RefreshIndicator(
-                      color: const Color(0xFF1B4332),
-                      onRefresh: fetchFarms,
-                      child: ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        itemCount: farms.length,
-                        itemBuilder: (context, index) {
-                          final farm = farms[index];
-                          return GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (ctx) => PlotsScreen(farm: farm),
+                  ? const Center(
+                      child: CircularProgressIndicator(
+                        color: Color(0xFF1B4332),
+                      ),
+                    )
+                  : farms.isEmpty
+                      ? _EmptyState(onAdd: startNewFarm)
+                      : RefreshIndicator(
+                          color: const Color(0xFF1B4332),
+                          onRefresh: fetchFarms,
+                          child: ListView.builder(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            itemCount: farms.length,
+                            itemBuilder: (context, index) {
+                              final farm = farms[index];
+
+                              return GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (ctx) => PlotsScreen(farm: farm),
+                                    ),
+                                  );
+                                },
+                                child: _FarmCard(
+                                  farm: farm,
+                                  onEdit: () => startEditFarm(farm),
+                                  onDelete: () => _confirmDelete(context, farm),
                                 ),
                               );
                             },
-                            child: _FarmCard(
-                              farm: farm,
-                              onDelete: () => _confirmDelete(context, farm),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                          ),
+                        ),
             ),
           ],
         ),
@@ -240,7 +334,10 @@ class _FarmsScreenState extends State<FarmsScreen> {
               Navigator.pop(ctx);
               deleteFarm(farm.id);
             },
-            child: const Text('Delete', style: TextStyle(color: Colors.red)),
+            child: const Text(
+              'Delete',
+              style: TextStyle(color: Colors.red),
+            ),
           ),
         ],
       ),
@@ -250,14 +347,24 @@ class _FarmsScreenState extends State<FarmsScreen> {
 
 class _FarmCard extends StatelessWidget {
   final Farm farm;
+  final VoidCallback onEdit;
   final VoidCallback onDelete;
-  const _FarmCard({required this.farm, required this.onDelete});
+
+  const _FarmCard({
+    required this.farm,
+    required this.onEdit,
+    required this.onDelete,
+  });
 
   @override
   Widget build(BuildContext context) {
     final initials = farm.name
-      .split(' ').take(2)
-      .map((w) => w[0].toUpperCase()).join();
+        .trim()
+        .split(' ')
+        .where((word) => word.isNotEmpty)
+        .take(2)
+        .map((word) => word[0].toUpperCase())
+        .join();
 
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
@@ -265,20 +372,28 @@ class _FarmCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(16),
-        boxShadow: [BoxShadow(color: Colors.black.withOpacity(0.04), blurRadius: 10)],
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.04),
+            blurRadius: 10,
+          ),
+        ],
       ),
       child: Row(
         children: [
           Container(
-            width: 48, height: 48,
+            width: 48,
+            height: 48,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: const Color(0xFF1B4332).withOpacity(0.08),
             ),
             child: Center(
-              child: Text(initials,
+              child: Text(
+                initials.isEmpty ? '?' : initials,
                 style: const TextStyle(
-                  fontSize: 14, fontWeight: FontWeight.w700,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w700,
                   color: Color(0xFF1B4332),
                 ),
               ),
@@ -289,37 +404,63 @@ class _FarmCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(farm.name,
+                Text(
+                  farm.name,
                   style: const TextStyle(
-                    fontSize: 15, fontWeight: FontWeight.w700,
+                    fontSize: 15,
+                    fontWeight: FontWeight.w700,
                     color: Color(0xFF1B4332),
                   ),
                 ),
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    Icon(Icons.location_on_outlined, size: 12, color: Colors.grey.shade500),
+                    Icon(
+                      Icons.location_on_outlined,
+                      size: 12,
+                      color: Colors.grey.shade500,
+                    ),
                     const SizedBox(width: 2),
-                    Text(farm.location,
-                      style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                    Flexible(
+                      child: Text(
+                        farm.location,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey.shade500,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ),
                     const SizedBox(width: 10),
-                    Icon(Icons.crop_square_rounded, size: 12, color: Colors.grey.shade500),
+                    Icon(
+                      Icons.crop_square_rounded,
+                      size: 12,
+                      color: Colors.grey.shade500,
+                    ),
                     const SizedBox(width: 2),
-                    Text('${farm.acres} ac',
-                      style: TextStyle(fontSize: 12, color: Colors.grey.shade500),
+                    Text(
+                      '${farm.acres} ac',
+                      style: TextStyle(
+                        fontSize: 12,
+                        color: Colors.grey.shade500,
+                      ),
                     ),
                   ],
                 ),
               ],
             ),
           ),
-          PopupMenuButton(
-            icon: Icon(Icons.more_vert_rounded, color: Colors.grey.shade400),
-            itemBuilder: (ctx) => [
-              const PopupMenuItem(value: 'delete', child: Text('Delete')),
+          PopupMenuButton<String>(
+            icon: Icon(
+              Icons.more_vert_rounded,
+              color: Colors.grey.shade400,
+            ),
+            itemBuilder: (ctx) => const [
+              PopupMenuItem(value: 'edit', child: Text('Edit')),
+              PopupMenuItem(value: 'delete', child: Text('Delete')),
             ],
             onSelected: (val) {
+              if (val == 'edit') onEdit();
               if (val == 'delete') onDelete();
             },
           ),
@@ -331,6 +472,7 @@ class _FarmCard extends StatelessWidget {
 
 class _EmptyState extends StatelessWidget {
   final VoidCallback onAdd;
+
   const _EmptyState({required this.onAdd});
 
   @override
@@ -340,36 +482,53 @@ class _EmptyState extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            width: 80, height: 80,
+            width: 80,
+            height: 80,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
               color: const Color(0xFF1B4332).withOpacity(0.06),
             ),
-            child: Icon(Icons.agriculture_outlined,
-              size: 36, color: const Color(0xFF1B4332).withOpacity(0.3)),
+            child: Icon(
+              Icons.agriculture_outlined,
+              size: 36,
+              color: const Color(0xFF1B4332).withOpacity(0.3),
+            ),
           ),
           const SizedBox(height: 16),
-          const Text('No farms yet',
+          const Text(
+            'No farms yet',
             style: TextStyle(
-              fontSize: 16, fontWeight: FontWeight.w600,
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
               color: Color(0xFF1B4332),
             ),
           ),
           const SizedBox(height: 6),
-          Text('Tap + to add your first farm',
-            style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+          Text(
+            'Tap + to add your first farm',
+            style: TextStyle(
+              fontSize: 13,
+              color: Colors.grey.shade500,
+            ),
           ),
           const SizedBox(height: 20),
           GestureDetector(
             onTap: onAdd,
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24,
+                vertical: 12,
+              ),
               decoration: BoxDecoration(
                 color: const Color(0xFF1B4332),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: const Text('Add Farm',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+              child: const Text(
+                'Add Farm',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
           ),
@@ -397,9 +556,11 @@ class _FormField extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(label,
+        Text(
+          label,
           style: TextStyle(
-            fontSize: 11, fontWeight: FontWeight.w500,
+            fontSize: 11,
+            fontWeight: FontWeight.w500,
             color: Colors.grey.shade600,
           ),
         ),
@@ -407,10 +568,16 @@ class _FormField extends StatelessWidget {
         TextField(
           controller: controller,
           keyboardType: isNumber ? TextInputType.number : TextInputType.text,
-          style: const TextStyle(fontSize: 13, color: Color(0xFF1B4332)),
+          style: const TextStyle(
+            fontSize: 13,
+            color: Color(0xFF1B4332),
+          ),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 13),
+            hintStyle: TextStyle(
+              color: Colors.grey.shade400,
+              fontSize: 13,
+            ),
             filled: true,
             fillColor: const Color(0xFFF4F6F3),
             border: OutlineInputBorder(
@@ -425,7 +592,10 @@ class _FormField extends StatelessWidget {
               borderRadius: BorderRadius.circular(10),
               borderSide: const BorderSide(color: Color(0xFF1B4332)),
             ),
-            contentPadding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 14,
+              vertical: 12,
+            ),
           ),
         ),
       ],

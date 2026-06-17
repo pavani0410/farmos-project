@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
@@ -26,6 +27,14 @@ public class PlotController {
     public List<Plot> getPlots(@PathVariable Long farmId) {
         return plotService.getPlotsByFarm(farmId);
     }
+    @PutMapping("/{plotId}")
+    public ResponseEntity<Plot> updatePlot(
+            @PathVariable Long farmId,
+            @PathVariable Long plotId,
+            @RequestBody Plot plot) {
+        return ResponseEntity.ok(plotService.updatePlot(farmId, plotId, plot));
+    }
+    
 
     @PostMapping
     public ResponseEntity<Plot> createPlot(

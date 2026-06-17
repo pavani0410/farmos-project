@@ -24,4 +24,14 @@ public class FarmService {
     public void deleteFarm(Long id) {
         farmRepository.deleteById(id);
     }
+    public Farm updateFarm(Long id, Farm updatedFarm) {
+        Farm farm = farmRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Farm not found"));
+
+        farm.setName(updatedFarm.getName());
+        farm.setAcres(updatedFarm.getAcres());
+        farm.setLocation(updatedFarm.getLocation());
+
+        return farmRepository.save(farm);
+    }
 }

@@ -28,7 +28,22 @@ public class PlotService {
         plot.setFarm(farm);
         return plotRepository.save(plot);
     }
+    public Plot updatePlot(Long farmId, Long plotId, Plot updatedPlot) {
+        Farm farm = farmRepository.findById(farmId)
+                .orElseThrow(() -> new RuntimeException("Farm not found"));
 
+        Plot plot = plotRepository.findById(plotId)
+                .orElseThrow(() -> new RuntimeException("Plot not found"));
+
+        plot.setFarm(farm);
+        plot.setName(updatedPlot.getName());
+        plot.setSoilType(updatedPlot.getSoilType());
+        plot.setAreaM2(updatedPlot.getAreaM2());
+        plot.setAreaAcres(updatedPlot.getAreaAcres());
+        plot.setPolygonPoints(updatedPlot.getPolygonPoints());
+
+        return plotRepository.save(plot);
+    }
     public void deletePlot(Long plotId) {
         plotRepository.deleteById(plotId);
     }
