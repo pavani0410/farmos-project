@@ -15,6 +15,7 @@ import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:http_parser/http_parser.dart';
 
 // Change this if you deploy the Python service somewhere other than localhost.
 const String _sketchServiceUrl = 'http://localhost:8000';
@@ -90,10 +91,14 @@ class _SketchDigitizerScreenState extends State<SketchDigitizerScreen> {
     try {
       final uri = Uri.parse('$_sketchServiceUrl/digitize');
       final request = http.MultipartRequest('POST', uri);
-      request.files.add(http.MultipartFile.fromBytes(
-        'file', bytes,
-        filename: 'sketch.png',
-      ));
+      request.files.add(
+        http.MultipartFile.fromBytes(
+          'file',
+          bytes,
+          filename: 'sketch.png',
+          contentType: MediaType('image', 'png'),
+  ),
+);
       final streamed = await request.send().timeout(const Duration(seconds: 30));
       final response = await http.Response.fromStream(streamed);
 
@@ -582,42 +587,111 @@ class _OverlayPainter extends CustomPainter {
   final List<ManualPoint> manualPoints;
   final Offset Function(Offset) toDisplay;
 
-  _OverlayPainter({required this.edges, required this.manualPoints, required this.toDisplay});
+  _OverlayPainter({
+    required this.edges,
+    required this.manualPoints,
+    required this.toDisplay,
+  });
 
   @override
   void paint(Canvas canvas, Size size) {
-    for (final e in edges) {
+    for (final entry in edges.asMap().entries) {
+      final index = entry.key;
+      final e = entry.value;
+
       final p1 = toDisplay(e.p1);
       final p2 = toDisplay(e.p2);
-      final color = e.selected ? const Color(0xFF52B788) : Colors.redAccent.withOpacity(0.6);
-      canvas.drawLine(p1, p2, Paint()
-        ..color = color
-        ..strokeWidth = e.selected ? 4 : 2
-        ..strokeCap = StrokeCap.round);
+      final mid = Offset((p1.dx + p2.dx) / 2, (p1.dy + p2.dy) / 2);
+
+      final color = e.selected
+          ? const Color(0xFF52B788)
+          : Colors.redAccent.withOpacity(0.65);
+
+      canvas.drawLine(
+        p1,
+        p2,
+        Paint()
+          ..color = color
+          ..strokeWidth = e.selected ? 4 : 2
+          ..strokeCap = StrokeCap.round,
+      );
 
       canvas.drawCircle(p1, 5, Paint()..color = color);
       canvas.drawCircle(p2, 5, Paint()..color = color);
 
+      _drawBadge(
+        canvas,
+        'Edge ${index + 1}',
+        Offset(mid.dx, mid.dy - 18),
+        color,
+      );
+
       if (e.distanceMeters != null) {
-        final mid = Offset((p1.dx + p2.dx) / 2, (p1.dy + p2.dy) / 2);
-        final tp = TextPainter(
-          text: TextSpan(text: '${e.distanceMeters!.toStringAsFixed(1)}m',
-            style: TextStyle(color: color, fontSize: 11, fontWeight: FontWeight.w700,
-              background: Paint()..color = Colors.white.withOpacity(0.85))),
-          textDirection: TextDirection.ltr,
-        )..layout();
-        tp.paint(canvas, Offset(mid.dx - tp.width / 2, mid.dy - tp.height / 2 - 12));
+        _drawBadge(
+          canvas,
+          '${e.distanceMeters!.toStringAsFixed(1)}m',
+          Offset(mid.dx, mid.dy + 18),
+          color,
+        );
       }
     }
 
     for (final m in manualPoints) {
       final p = toDisplay(m.pos);
       canvas.drawCircle(p, 6, Paint()..color = const Color(0xFF2196F3));
-      canvas.drawCircle(p, 6, Paint()
-        ..color = Colors.white
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 2);
+      canvas.drawCircle(
+        p,
+        6,
+        Paint()
+          ..color = Colors.white
+          ..style = PaintingStyle.stroke
+          ..strokeWidth = 2,
+      );
     }
+  }
+
+  void _drawBadge(Canvas canvas, String text, Offset center, Color color) {
+    final tp = TextPainter(
+      text: TextSpan(
+        text: text,
+        style: TextStyle(
+          color: color,
+          fontSize: 11,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+      textDirection: TextDirection.ltr,
+    )..layout();
+
+    const paddingX = 6.0;
+    const paddingY = 3.0;
+
+    final rect = Rect.fromCenter(
+      center: center,
+      width: tp.width + paddingX * 2,
+      height: tp.height + paddingY * 2,
+    );
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(rect, const Radius.circular(6)),
+      Paint()..color = Colors.white.withOpacity(0.9),
+    );
+
+    canvas.drawRRect(
+      RRect.fromRectAndRadius(rect, const Radius.circular(6)),
+      Paint()
+        ..color = color.withOpacity(0.45)
+        ..style = PaintingStyle.stroke
+        ..strokeWidth = 1,
+    );
+
+    tp.paint(
+      canvas,
+      Offset(
+        rect.left + paddingX,
+        rect.top + paddingY,
+      ),
+    );
   }
 
   @override

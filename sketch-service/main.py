@@ -30,7 +30,7 @@ def health():
 
 @app.post("/digitize")
 async def digitize(file: UploadFile = File(...)):
-    if not file.content_type or not file.content_type.startswith("image/"):
+    if file.content_type and not file.content_type.startswith("image/"):
         raise HTTPException(status_code=400, detail="Please upload an image file")
 
     image_bytes = await file.read()
