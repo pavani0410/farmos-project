@@ -58,11 +58,7 @@ class _FarmsScreenState extends State<FarmsScreen> {
     if (acres == null) return;
 
     try {
-      final farmData = {
-        'name': name,
-        'acres': acres,
-        'location': location,
-      };
+      final farmData = {'name': name, 'acres': acres, 'location': location};
 
       if (editingFarm == null) {
         await ApiService.createFarm(farmData);
@@ -183,7 +179,7 @@ class _FarmsScreenState extends State<FarmsScreen> {
                   borderRadius: BorderRadius.circular(16),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.06),
+                      color: Colors.black.withValues(alpha: 0.06),
                       blurRadius: 10,
                     ),
                   ],
@@ -282,35 +278,35 @@ class _FarmsScreenState extends State<FarmsScreen> {
                       ),
                     )
                   : farms.isEmpty
-                      ? _EmptyState(onAdd: startNewFarm)
-                      : RefreshIndicator(
-                          color: const Color(0xFF1B4332),
-                          onRefresh: fetchFarms,
-                          child: ListView.builder(
-                            padding: const EdgeInsets.symmetric(horizontal: 20),
-                            itemCount: farms.length,
-                            itemBuilder: (context, index) {
-                              final farm = farms[index];
+                  ? _EmptyState(onAdd: startNewFarm)
+                  : RefreshIndicator(
+                      color: const Color(0xFF1B4332),
+                      onRefresh: fetchFarms,
+                      child: ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 20),
+                        itemCount: farms.length,
+                        itemBuilder: (context, index) {
+                          final farm = farms[index];
 
-                              return GestureDetector(
-                                behavior: HitTestBehavior.opaque,
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (ctx) => PlotsScreen(farm: farm),
-                                    ),
-                                  );
-                                },
-                                child: _FarmCard(
-                                  farm: farm,
-                                  onEdit: () => startEditFarm(farm),
-                                  onDelete: () => _confirmDelete(context, farm),
+                          return GestureDetector(
+                            behavior: HitTestBehavior.opaque,
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (ctx) => PlotsScreen(farm: farm),
                                 ),
                               );
                             },
-                          ),
-                        ),
+                            child: _FarmCard(
+                              farm: farm,
+                              onEdit: () => startEditFarm(farm),
+                              onDelete: () => _confirmDelete(context, farm),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
             ),
           ],
         ),
@@ -334,10 +330,7 @@ class _FarmsScreenState extends State<FarmsScreen> {
               Navigator.pop(ctx);
               deleteFarm(farm.id);
             },
-            child: const Text(
-              'Delete',
-              style: TextStyle(color: Colors.red),
-            ),
+            child: const Text('Delete', style: TextStyle(color: Colors.red)),
           ),
         ],
       ),
@@ -374,7 +367,7 @@ class _FarmCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.04),
+            color: Colors.black.withValues(alpha: 0.04),
             blurRadius: 10,
           ),
         ],
@@ -386,7 +379,7 @@ class _FarmCard extends StatelessWidget {
             height: 48,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFF1B4332).withOpacity(0.08),
+              color: const Color(0xFF1B4332).withValues(alpha: 0.08),
             ),
             child: Center(
               child: Text(
@@ -451,10 +444,7 @@ class _FarmCard extends StatelessWidget {
             ),
           ),
           PopupMenuButton<String>(
-            icon: Icon(
-              Icons.more_vert_rounded,
-              color: Colors.grey.shade400,
-            ),
+            icon: Icon(Icons.more_vert_rounded, color: Colors.grey.shade400),
             itemBuilder: (ctx) => const [
               PopupMenuItem(value: 'edit', child: Text('Edit')),
               PopupMenuItem(value: 'delete', child: Text('Delete')),
@@ -486,12 +476,12 @@ class _EmptyState extends StatelessWidget {
             height: 80,
             decoration: BoxDecoration(
               shape: BoxShape.circle,
-              color: const Color(0xFF1B4332).withOpacity(0.06),
+              color: const Color(0xFF1B4332).withValues(alpha: 0.06),
             ),
             child: Icon(
               Icons.agriculture_outlined,
               size: 36,
-              color: const Color(0xFF1B4332).withOpacity(0.3),
+              color: const Color(0xFF1B4332).withValues(alpha: 0.3),
             ),
           ),
           const SizedBox(height: 16),
@@ -506,19 +496,13 @@ class _EmptyState extends StatelessWidget {
           const SizedBox(height: 6),
           Text(
             'Tap + to add your first farm',
-            style: TextStyle(
-              fontSize: 13,
-              color: Colors.grey.shade500,
-            ),
+            style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
           ),
           const SizedBox(height: 20),
           GestureDetector(
             onTap: onAdd,
             child: Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24,
-                vertical: 12,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               decoration: BoxDecoration(
                 color: const Color(0xFF1B4332),
                 borderRadius: BorderRadius.circular(12),
@@ -568,16 +552,10 @@ class _FormField extends StatelessWidget {
         TextField(
           controller: controller,
           keyboardType: isNumber ? TextInputType.number : TextInputType.text,
-          style: const TextStyle(
-            fontSize: 13,
-            color: Color(0xFF1B4332),
-          ),
+          style: const TextStyle(fontSize: 13, color: Color(0xFF1B4332)),
           decoration: InputDecoration(
             hintText: hint,
-            hintStyle: TextStyle(
-              color: Colors.grey.shade400,
-              fontSize: 13,
-            ),
+            hintStyle: TextStyle(color: Colors.grey.shade400, fontSize: 13),
             filled: true,
             fillColor: const Color(0xFFF4F6F3),
             border: OutlineInputBorder(

@@ -55,7 +55,7 @@ class _AppShellState extends State<AppShell> {
           color: Colors.white,
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withOpacity(0.06),
+              color: Colors.black.withValues(alpha: 0.06),
               blurRadius: 20,
               offset: const Offset(0, -4),
             ),
@@ -67,9 +67,27 @@ class _AppShellState extends State<AppShell> {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: [
-                _NavItem(icon: Icons.home_rounded, label: 'Home', index: 0, selected: _selectedIndex, onTap: (i) => setState(() => _selectedIndex = i)),
-                _NavItem(icon: Icons.agriculture_rounded, label: 'Farms', index: 1, selected: _selectedIndex, onTap: (i) => setState(() => _selectedIndex = i)),
-                _NavItem(icon: Icons.biotech_rounded, label: 'Leaf AI', index: 2, selected: _selectedIndex, onTap: (i) => setState(() => _selectedIndex = i)),
+                _NavItem(
+                  icon: Icons.home_rounded,
+                  label: 'Home',
+                  index: 0,
+                  selected: _selectedIndex,
+                  onTap: (i) => setState(() => _selectedIndex = i),
+                ),
+                _NavItem(
+                  icon: Icons.agriculture_rounded,
+                  label: 'Farms',
+                  index: 1,
+                  selected: _selectedIndex,
+                  onTap: (i) => setState(() => _selectedIndex = i),
+                ),
+                _NavItem(
+                  icon: Icons.biotech_rounded,
+                  label: 'Leaf AI',
+                  index: 2,
+                  selected: _selectedIndex,
+                  onTap: (i) => setState(() => _selectedIndex = i),
+                ),
               ],
             ),
           ),
@@ -87,8 +105,10 @@ class _NavItem extends StatelessWidget {
   final Function(int) onTap;
 
   const _NavItem({
-    required this.icon, required this.label,
-    required this.index, required this.selected,
+    required this.icon,
+    required this.label,
+    required this.index,
+    required this.selected,
     required this.onTap,
   });
 
@@ -103,15 +123,19 @@ class _NavItem extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
             decoration: BoxDecoration(
-              color: isActive ? const Color(0xFF1B4332).withOpacity(0.1) : Colors.transparent,
+              color: isActive
+                  ? const Color(0xFF1B4332).withValues(alpha: 0.1)
+                  : Colors.transparent,
               borderRadius: BorderRadius.circular(20),
             ),
-            child: Icon(icon,
+            child: Icon(
+              icon,
               size: 22,
               color: isActive ? const Color(0xFF1B4332) : Colors.grey.shade400,
             ),
           ),
-          Text(label,
+          Text(
+            label,
             style: TextStyle(
               fontSize: 10,
               color: isActive ? const Color(0xFF1B4332) : Colors.grey.shade400,

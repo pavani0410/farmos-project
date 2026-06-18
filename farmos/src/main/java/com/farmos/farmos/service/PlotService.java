@@ -41,6 +41,7 @@ public class PlotService {
         plot.setAreaM2(updatedPlot.getAreaM2());
         plot.setAreaAcres(updatedPlot.getAreaAcres());
         plot.setPolygonPoints(updatedPlot.getPolygonPoints());
+        plot.setDigitizedDiagram(updatedPlot.getDigitizedDiagram());
 
         return plotRepository.save(plot);
     }

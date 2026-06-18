@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 
 // your Spring Boot server address
@@ -63,9 +64,7 @@ class ApiService {
 
   // GET /api/farms/:farmId/plots
   static Future<List<dynamic>> getPlots(int farmId) async {
-    final response = await http.get(
-      Uri.parse('$baseUrl/farms/$farmId/plots'),
-    );
+    final response = await http.get(Uri.parse('$baseUrl/farms/$farmId/plots'));
 
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
@@ -120,5 +119,33 @@ class ApiService {
     if (response.statusCode != 200) {
       throw Exception('Failed to delete plot');
     }
+  }
+
+  // POST /api/leaf/detect
+  static Future<Map<String, dynamic>> detectLeafDisease(
+    Uint8List imageBytes,
+    String filename,
+  ) async {
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('$baseUrl/leaf/detect'),
+    );
+
+    request.files.add(
+      http.MultipartFile.fromBytes('image', imageBytes, filename: filename),
+    );
+
+    final streamed = await request.send();
+    final response = await http.Response.fromStream(streamed);
+    final body = jsonDecode(response.body);
+
+    if (response.statusCode == 200) {
+      return body;
+    }
+
+    final message = body is Map && body['error'] != null
+        ? body['error']
+        : 'Failed to detect leaf disease';
+    throw Exception(message);
   }
 }

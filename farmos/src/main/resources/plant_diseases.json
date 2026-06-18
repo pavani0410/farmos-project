@@ -1,0 +1,837 @@
+[
+  {
+    "class_name": "Apple_Scab",
+    "display_name": "Apple Scab",
+    "crop": "Apple",
+    "is_healthy": false,
+    "disease_type": "fungal",
+    "visual_symptoms": [
+      "Olive-green to black circular spots (3–10 mm)",
+      "Spots develop gray centers with dark margins",
+      "Leaf distortion and curling",
+      "Premature leaf drop"
+    ],
+    "key_visual_cues": "Olive-black circular spots with concentric pattern on leaf surface",
+    "confusable_with": ["Apple_Rust", "Apple_Healthy"],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "Remove and destroy heavily infected leaves and fallen leaf litter.",
+        "Avoid overhead irrigation to reduce leaf wetness."
+      ],
+      "treatment": [
+        "Apply protectant fungicides beginning at green tip or early leaf emergence and repeat at 5–7 day intervals during wet weather.",
+        "Use labeled products such as captan or other locally recommended apple scab fungicides according to label directions."
+      ],
+      "prevention": [
+        "Plant resistant apple cultivars where available.",
+        "Prune trees to improve airflow and faster leaf drying.",
+        "Rake, shred, or destroy fallen leaves in autumn to reduce overwintering inoculum."
+      ]
+    }
+  },
+  {
+    "class_name": "Apple_Healthy",
+    "display_name": "Apple Healthy",
+    "crop": "Apple",
+    "is_healthy": true,
+    "disease_type": "healthy",
+    "visual_symptoms": [
+      "Uniform green leaf color",
+      "No spots or lesions",
+      "Normal shape and texture"
+    ],
+    "key_visual_cues": "Uniform green smooth leaf without lesions",
+    "confusable_with": ["Apple_Scab", "Apple_Rust"],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "No treatment needed.",
+        "Continue routine monitoring."
+      ],
+      "treatment": [
+        "No chemical treatment required."
+      ],
+      "prevention": [
+        "Keep canopy open with proper pruning.",
+        "Avoid prolonged leaf wetness.",
+        "Inspect regularly for early lesions."
+      ]
+    }
+  },
+  {
+    "class_name": "Apple_Rust",
+    "display_name": "Apple Cedar Rust",
+    "crop": "Apple",
+    "is_healthy": false,
+    "disease_type": "fungal",
+    "visual_symptoms": [
+      "Bright orange-yellow spots (1–5 mm)",
+      "Spots may develop dark centers",
+      "Leaf curling visible"
+    ],
+    "key_visual_cues": "Bright orange-yellow raised spots clearly visible on leaf",
+    "confusable_with": ["Apple_Scab", "Apple_Healthy"],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "Remove heavily infected leaves when practical.",
+        "Inspect nearby juniper hosts if present."
+      ],
+      "treatment": [
+        "Apply labeled fungicides during susceptible periods, especially around spring infection windows.",
+        "Follow local extension timing recommendations for rust control."
+      ],
+      "prevention": [
+        "Remove or manage nearby juniper hosts that support the rust cycle.",
+        "Plant resistant apple cultivars where available.",
+        "Improve airflow and avoid prolonged leaf wetness."
+      ]
+    }
+  },
+  {
+    "class_name": "Bell_Pepper_Healthy",
+    "display_name": "Bell Pepper Healthy",
+    "crop": "Bell Pepper",
+    "is_healthy": true,
+    "disease_type": "healthy",
+    "visual_symptoms": [
+      "Uniform green coloration",
+      "No visible spots",
+      "Normal leaf structure"
+    ],
+    "key_visual_cues": "Healthy uniform green leaf with smooth surface",
+    "confusable_with": ["Bell_Pepper_Leaf_Spot"],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "No treatment needed.",
+        "Continue routine monitoring."
+      ],
+      "treatment": [
+        "No chemical treatment required."
+      ],
+      "prevention": [
+        "Use clean transplants.",
+        "Avoid overhead watering.",
+        "Keep plant spacing adequate."
+      ]
+    }
+  },
+  {
+    "class_name": "Bell_Pepper_Leaf_Spot",
+    "display_name": "Bell Pepper Leaf Spot",
+    "crop": "Bell Pepper",
+    "is_healthy": false,
+    "disease_type": "bacterial",
+    "visual_symptoms": [
+      "Small circular brown spots (2–5 mm)",
+      "Dark margins around spots",
+      "Yellow halo around lesions"
+    ],
+    "key_visual_cues": "Brown circular spots with yellow halos",
+    "confusable_with": ["Bell_Pepper_Healthy"],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "Remove symptomatic leaves.",
+        "Avoid handling wet plants.",
+        "Disinfect tools after contact."
+      ],
+      "treatment": [
+        "Use copper-based sprays only if locally recommended.",
+        "Repeat applications only according to label guidance."
+      ],
+      "prevention": [
+        "Use disease-free seed and transplants.",
+        "Avoid overhead irrigation and leaf splash.",
+        "Rotate crops and remove infected debris."
+      ]
+    }
+  },
+  {
+    "class_name": "Blueberry_Healthy",
+    "display_name": "Blueberry Healthy",
+    "crop": "Blueberry",
+    "is_healthy": true,
+    "disease_type": "healthy",
+    "visual_symptoms": [
+      "Deep green leaves",
+      "No spots or discoloration",
+      "Normal structure"
+    ],
+    "key_visual_cues": "Deep uniform green leaf without abnormalities",
+    "confusable_with": [],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "No treatment needed.",
+        "Continue routine monitoring."
+      ],
+      "treatment": [
+        "No chemical treatment required."
+      ],
+      "prevention": [
+        "Maintain normal irrigation and nutrition.",
+        "Avoid prolonged leaf wetness.",
+        "Inspect regularly for early disease signs."
+      ]
+    }
+  },
+  {
+    "class_name": "Cherry_Healthy",
+    "display_name": "Cherry Healthy",
+    "crop": "Cherry",
+    "is_healthy": true,
+    "disease_type": "healthy",
+    "visual_symptoms": [
+      "Uniform green color",
+      "No spots or distortion",
+      "Normal leaf structure"
+    ],
+    "key_visual_cues": "Clean green leaf with no visible defects",
+    "confusable_with": [],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "No treatment needed.",
+        "Continue routine monitoring."
+      ],
+      "treatment": [
+        "No chemical treatment required."
+      ],
+      "prevention": [
+        "Prune to improve airflow.",
+        "Avoid prolonged wet foliage.",
+        "Inspect regularly for early symptoms."
+      ]
+    }
+  },
+  {
+    "class_name": "Corn_Gray_Leaf_Spot",
+    "display_name": "Corn Gray Leaf Spot",
+    "crop": "Corn",
+    "is_healthy": false,
+    "disease_type": "fungal",
+    "visual_symptoms": [
+      "Long rectangular gray-brown lesions",
+      "Parallel to leaf veins",
+      "Leaf drying and browning"
+    ],
+    "key_visual_cues": "Rectangular lesions aligned along veins",
+    "confusable_with": ["Corn_Leaf_Blight", "Corn_Rust"],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "Scout lower leaves first.",
+        "Avoid overhead irrigation.",
+        "Remove heavily affected leaves when practical."
+      ],
+      "treatment": [
+        "Apply labeled fungicides if disease pressure is high.",
+        "Use products according to local extension or label guidance."
+      ],
+      "prevention": [
+        "Plant resistant hybrids where available.",
+        "Rotate crops and manage crop residue.",
+        "Reduce leaf wetness and improve field airflow."
+      ]
+    }
+  },
+  {
+    "class_name": "Corn_Leaf_Blight",
+    "display_name": "Corn Northern Leaf Blight",
+    "crop": "Corn",
+    "is_healthy": false,
+    "disease_type": "fungal",
+    "visual_symptoms": [
+      "Cigar-shaped gray-green lesions (1–6 cm)",
+      "Dark brown margins",
+      "Large blighted areas"
+    ],
+    "key_visual_cues": "Long cigar-shaped lesions distinct from rectangular spots",
+    "confusable_with": ["Corn_Gray_Leaf_Spot"],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "Remove the most affected leaves if feasible.",
+        "Avoid overhead irrigation.",
+        "Monitor neighboring plants closely."
+      ],
+      "treatment": [
+        "Apply labeled fungicides during early disease development if needed.",
+        "Follow local timing recommendations."
+      ],
+      "prevention": [
+        "Use resistant hybrids where available.",
+        "Rotate crops and manage residue.",
+        "Promote airflow and reduce leaf wetness."
+      ]
+    }
+  },
+  {
+    "class_name": "Corn_Rust",
+    "display_name": "Corn Common Rust",
+    "crop": "Corn",
+    "is_healthy": false,
+    "disease_type": "fungal",
+    "visual_symptoms": [
+      "Small round reddish-brown pustules",
+      "Scattered across leaf surface",
+      "Pustules rupture releasing spores"
+    ],
+    "key_visual_cues": "Round raised reddish pustules on leaf surface",
+    "confusable_with": [],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "Scout upper and lower leaf surfaces.",
+        "Avoid overhead irrigation where possible."
+      ],
+      "treatment": [
+        "Apply labeled fungicides if the disease is moving rapidly or pressure is high."
+      ],
+      "prevention": [
+        "Use resistant hybrids where available.",
+        "Monitor early and manage volunteer corn.",
+        "Maintain good field hygiene."
+      ]
+    }
+  },
+  {
+    "class_name": "Peach_Healthy",
+    "display_name": "Peach Healthy",
+    "crop": "Peach",
+    "is_healthy": true,
+    "disease_type": "healthy",
+    "visual_symptoms": [
+      "Uniform green color",
+      "No spots or curling",
+      "Normal shape"
+    ],
+    "key_visual_cues": "Uniform healthy green leaf",
+    "confusable_with": [],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "No treatment needed.",
+        "Continue routine monitoring."
+      ],
+      "treatment": [
+        "No chemical treatment required."
+      ],
+      "prevention": [
+        "Keep canopy open with pruning.",
+        "Avoid prolonged leaf wetness.",
+        "Inspect regularly for early symptoms."
+      ]
+    }
+  },
+  {
+    "class_name": "Potato_Early_Blight",
+    "display_name": "Potato Early Blight",
+    "crop": "Potato",
+    "is_healthy": false,
+    "disease_type": "fungal",
+    "visual_symptoms": [
+      "Dark brown spots with concentric rings",
+      "Target-like pattern",
+      "Yellowing around lesions"
+    ],
+    "key_visual_cues": "Concentric ring 'target board' pattern",
+    "confusable_with": ["Potato_Late_Blight"],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "Remove heavily infected leaves.",
+        "Avoid overhead irrigation.",
+        "Reduce leaf wetness duration."
+      ],
+      "treatment": [
+        "Apply labeled fungicides at first sign of disease if pressure is high.",
+        "Repeat according to label and local recommendations."
+      ],
+      "prevention": [
+        "Rotate crops and remove infected debris.",
+        "Use clean seed tubers.",
+        "Promote airflow and avoid plant stress."
+      ]
+    }
+  },
+  {
+    "class_name": "Potato_Late_Blight",
+    "display_name": "Potato Late Blight",
+    "crop": "Potato",
+    "is_healthy": false,
+    "disease_type": "fungal",
+    "visual_symptoms": [
+      "Large irregular dark lesions",
+      "White fuzzy growth underneath leaf",
+      "Rapid spreading damage"
+    ],
+    "key_visual_cues": "White fuzzy growth under leaf is key indicator",
+    "confusable_with": ["Potato_Early_Blight"],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "Remove infected leaves immediately.",
+        "Avoid overhead irrigation.",
+        "Destroy infected plant material."
+      ],
+      "treatment": [
+        "Apply fungicides preventively or at first detection, then repeat at short intervals during high risk.",
+        "Use locally recommended late blight products."
+      ],
+      "prevention": [
+        "Use certified seed and resistant varieties where available.",
+        "Avoid prolonged wet foliage.",
+        "Destroy cull piles and infected debris."
+      ]
+    }
+  },
+  {
+    "class_name": "Raspberry_Healthy",
+    "display_name": "Raspberry Healthy",
+    "crop": "Raspberry",
+    "is_healthy": true,
+    "disease_type": "healthy",
+    "visual_symptoms": [
+      "Uniform green leaves",
+      "No spots or distortion"
+    ],
+    "key_visual_cues": "Healthy uniform green leaf",
+    "confusable_with": [],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "No treatment needed.",
+        "Continue routine monitoring."
+      ],
+      "treatment": [
+        "No chemical treatment required."
+      ],
+      "prevention": [
+        "Keep foliage dry.",
+        "Maintain spacing for airflow.",
+        "Use clean planting material."
+      ]
+    }
+  },
+  {
+    "class_name": "Soybean_Healthy",
+    "display_name": "Soybean Healthy",
+    "crop": "Soybean",
+    "is_healthy": true,
+    "disease_type": "healthy",
+    "visual_symptoms": [
+      "Uniform green color",
+      "No yellowing or spots"
+    ],
+    "key_visual_cues": "Clean green leaf without lesions",
+    "confusable_with": [],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "No treatment needed.",
+        "Continue routine monitoring."
+      ],
+      "treatment": [
+        "No chemical treatment required."
+      ],
+      "prevention": [
+        "Rotate crops regularly.",
+        "Avoid prolonged leaf wetness.",
+        "Inspect plants for early stress signs."
+      ]
+    }
+  },
+  {
+    "class_name": "Squash_Powdery_Mildew",
+    "display_name": "Squash Powdery Mildew",
+    "crop": "Squash",
+    "is_healthy": false,
+    "disease_type": "fungal",
+    "visual_symptoms": [
+      "White powdery coating on leaves",
+      "Spreads across leaf surface",
+      "Leaf turns yellow and brown"
+    ],
+    "key_visual_cues": "Distinct white powder-like coating on leaves",
+    "confusable_with": [],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "Remove heavily infected leaves.",
+        "Increase airflow around plants.",
+        "Avoid overhead watering."
+      ],
+      "treatment": [
+        "Apply fungicides labeled for powdery mildew if needed.",
+        "Use products according to local label guidance."
+      ],
+      "prevention": [
+        "Space plants to improve ventilation.",
+        "Avoid excess nitrogen that drives dense growth.",
+        "Remove plant debris after harvest."
+      ]
+    }
+  },
+  {
+    "class_name": "Strawberry_Healthy",
+    "display_name": "Strawberry Healthy",
+    "crop": "Strawberry",
+    "is_healthy": true,
+    "disease_type": "healthy",
+    "visual_symptoms": [
+      "Uniform green leaves",
+      "No visible spots"
+    ],
+    "key_visual_cues": "Healthy green leaf with smooth texture",
+    "confusable_with": [],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "No treatment needed.",
+        "Continue routine monitoring."
+      ],
+      "treatment": [
+        "No chemical treatment required."
+      ],
+      "prevention": [
+        "Keep foliage dry.",
+        "Avoid overcrowding.",
+        "Remove old leaf debris."
+      ]
+    }
+  },
+  {
+    "class_name": "Tomato_Early_Blight",
+    "display_name": "Tomato Early Blight",
+    "crop": "Tomato",
+    "is_healthy": false,
+    "disease_type": "fungal",
+    "visual_symptoms": [
+      "Concentric ring brown spots",
+      "Target pattern visible",
+      "Yellowing around lesions"
+    ],
+    "key_visual_cues": "Target-like concentric ring pattern",
+    "confusable_with": ["Tomato_Late_Blight"],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "Remove the most affected leaves.",
+        "Avoid overhead irrigation.",
+        "Reduce leaf wetness and improve airflow."
+      ],
+      "treatment": [
+        "Apply labeled fungicides at first sign of disease if pressure is high.",
+        "Repeat according to label and local recommendations."
+      ],
+      "prevention": [
+        "Rotate crops and remove infected residue.",
+        "Mulch to reduce soil splash.",
+        "Use resistant varieties when available."
+      ]
+    }
+  },
+  {
+    "class_name": "Tomato_Septoria_Leaf_Spot",
+    "display_name": "Tomato Septoria Leaf Spot",
+    "crop": "Tomato",
+    "is_healthy": false,
+    "disease_type": "fungal",
+    "visual_symptoms": [
+      "Small circular spots with black centers",
+      "Gray lesions with dark margins",
+      "Lower leaves affected first"
+    ],
+    "key_visual_cues": "Tiny black dots inside circular leaf spots",
+    "confusable_with": ["Tomato_Early_Blight"],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "Remove infected lower leaves.",
+        "Avoid overhead irrigation.",
+        "Dispose of fallen leaf debris."
+      ],
+      "treatment": [
+        "Apply labeled fungicides if needed.",
+        "Repeat according to label instructions."
+      ],
+      "prevention": [
+        "Mulch to reduce soil splash.",
+        "Improve airflow through spacing and pruning.",
+        "Rotate crops and remove residue."
+      ]
+    }
+  },
+  {
+    "class_name": "Tomato_Healthy",
+    "display_name": "Tomato Healthy",
+    "crop": "Tomato",
+    "is_healthy": true,
+    "disease_type": "healthy",
+    "visual_symptoms": [
+      "Uniform green color",
+      "No spots or discoloration"
+    ],
+    "key_visual_cues": "Clean healthy green leaf",
+    "confusable_with": [],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "No treatment needed.",
+        "Continue routine monitoring."
+      ],
+      "treatment": [
+        "No chemical treatment required."
+      ],
+      "prevention": [
+        "Keep foliage dry.",
+        "Avoid overcrowding.",
+        "Inspect regularly for early lesions."
+      ]
+    }
+  },
+  {
+    "class_name": "Tomato_Bacterial_Spot",
+    "display_name": "Tomato Bacterial Spot",
+    "crop": "Tomato",
+    "is_healthy": false,
+    "disease_type": "bacterial",
+    "visual_symptoms": [
+      "Small dark water-soaked spots",
+      "Yellow halos around lesions",
+      "Leaf scarring"
+    ],
+    "key_visual_cues": "Water-soaked spots with yellow halo",
+    "confusable_with": [],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "Remove symptomatic leaves.",
+        "Avoid working with wet plants.",
+        "Disinfect tools after use."
+      ],
+      "treatment": [
+        "Use copper-based sprays only if locally recommended.",
+        "Follow label directions carefully."
+      ],
+      "prevention": [
+        "Use disease-free seed and transplants.",
+        "Avoid overhead watering and leaf splash.",
+        "Rotate crops and remove infected debris."
+      ]
+    }
+  },
+  {
+    "class_name": "Tomato_Late_Blight",
+    "display_name": "Tomato Late Blight",
+    "crop": "Tomato",
+    "is_healthy": false,
+    "disease_type": "fungal",
+    "visual_symptoms": [
+      "Large irregular dark lesions",
+      "White fuzzy growth underside",
+      "Fast spreading damage"
+    ],
+    "key_visual_cues": "White fuzzy underside growth is key indicator",
+    "confusable_with": ["Tomato_Early_Blight"],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "Remove infected tissue quickly.",
+        "Avoid overhead irrigation.",
+        "Destroy infected plant material."
+      ],
+      "treatment": [
+        "Apply fungicides preventively or at first detection, then repeat at short intervals during high risk.",
+        "Use locally recommended late blight products."
+      ],
+      "prevention": [
+        "Use clean transplants and resistant varieties where available.",
+        "Avoid prolonged leaf wetness.",
+        "Destroy cull piles and infected debris."
+      ]
+    }
+  },
+  {
+    "class_name": "Tomato_Mosaic_Virus",
+    "display_name": "Tomato Mosaic Virus",
+    "crop": "Tomato",
+    "is_healthy": false,
+    "disease_type": "viral",
+    "visual_symptoms": [
+      "Mosaic light-dark green pattern",
+      "Narrow curled leaves",
+      "Stunted growth"
+    ],
+    "key_visual_cues": "Mosaic color pattern and leaf distortion",
+    "confusable_with": [],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "Remove severely infected plants.",
+        "Avoid moving sap on tools or hands.",
+        "Control nearby weeds and volunteers."
+      ],
+      "treatment": [
+        "No curative treatment available."
+      ],
+      "prevention": [
+        "Use virus-free seed and transplants.",
+        "Sanitize tools and hands during handling.",
+        "Remove weeds and volunteer hosts."
+      ]
+    }
+  },
+  {
+    "class_name": "Tomato_Yellow_Leaf_Curl_Virus",
+    "display_name": "Tomato Yellow Leaf Curl Virus",
+    "crop": "Tomato",
+    "is_healthy": false,
+    "disease_type": "viral",
+    "visual_symptoms": [
+      "Yellow curling upper leaves",
+      "Brittle leaves",
+      "Stunted plant growth"
+    ],
+    "key_visual_cues": "Upward yellow curling leaves",
+    "confusable_with": [],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "Remove severely infected plants.",
+        "Control whiteflies immediately.",
+        "Avoid handling healthy plants after infected ones."
+      ],
+      "treatment": [
+        "No curative treatment available."
+      ],
+      "prevention": [
+        "Use virus-free planting material.",
+        "Control whitefly vectors.",
+        "Remove weeds and volunteer tomato plants."
+      ]
+    }
+  },
+  {
+    "class_name": "Tomato_Gray_Mold",
+    "display_name": "Tomato Gray Mold",
+    "crop": "Tomato",
+    "is_healthy": false,
+    "disease_type": "fungal",
+    "visual_symptoms": [
+      "Gray fuzzy mold on leaves",
+      "Soft brown lesions",
+      "Decay of plant tissue"
+    ],
+    "key_visual_cues": "Gray fuzzy mold covering leaf surface",
+    "confusable_with": [],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "Remove infected tissue promptly.",
+        "Improve airflow around plants.",
+        "Avoid overhead watering."
+      ],
+      "treatment": [
+        "Apply fungicides labeled for gray mold if needed.",
+        "Remove decaying plant parts to slow spread."
+      ],
+      "prevention": [
+        "Reduce humidity in the canopy.",
+        "Use proper spacing and pruning.",
+        "Remove infected debris after harvest."
+      ]
+    }
+  },
+  {
+    "class_name": "Tomato_Spider_Mites",
+    "display_name": "Tomato Spider Mites",
+    "crop": "Tomato",
+    "is_healthy": false,
+    "disease_type": "pest",
+    "visual_symptoms": [
+      "Tiny yellow speckles on leaves",
+      "Fine webbing visible",
+      "Leaf bronzing"
+    ],
+    "key_visual_cues": "Fine webbing with yellow speckled pattern",
+    "confusable_with": [],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "Rinse foliage and inspect leaf undersides.",
+        "Isolate heavily infested plants if possible."
+      ],
+      "treatment": [
+        "Apply insecticidal soap or approved miticide as labeled."
+      ],
+      "prevention": [
+        "Monitor regularly for early infestations.",
+        "Reduce dust stress and improve plant vigor.",
+        "Encourage beneficial predators where appropriate."
+      ]
+    }
+  },
+  {
+    "class_name": "Grape_Healthy",
+    "display_name": "Grape Healthy",
+    "crop": "Grape",
+    "is_healthy": true,
+    "disease_type": "healthy",
+    "visual_symptoms": [
+      "Uniform green leaves",
+      "No spots or curling"
+    ],
+    "key_visual_cues": "Healthy green leaf without lesions",
+    "confusable_with": [],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "No treatment needed.",
+        "Continue routine monitoring."
+      ],
+      "treatment": [
+        "No chemical treatment required."
+      ],
+      "prevention": [
+        "Keep canopy open for airflow.",
+        "Avoid prolonged leaf wetness.",
+        "Inspect regularly for early symptoms."
+      ]
+    }
+  },
+  {
+    "class_name": "Grape_Black_Rot",
+    "display_name": "Grape Black Rot",
+    "crop": "Grape",
+    "is_healthy": false,
+    "disease_type": "fungal",
+    "visual_symptoms": [
+      "Brown circular leaf spots",
+      "Black shriveled fruit (mummies)",
+      "Leaf lesions with margins"
+    ],
+    "key_visual_cues": "Black shriveled fruit mummies and circular spots",
+    "confusable_with": [],
+    "visual_domain": "leaf_only",
+    "solutions": {
+      "immediate_actions": [
+        "Remove infected leaves and fruit.",
+        "Avoid overhead irrigation.",
+        "Sanitize tools after use."
+      ],
+      "treatment": [
+        "Apply fungicides according to local guidance if needed."
+      ],
+      "prevention": [
+        "Remove infected mummies and debris.",
+        "Prune for airflow and sunlight penetration.",
+        "Use resistant varieties when available."
+      ]
+    }
+  }
+]

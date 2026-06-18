@@ -24,6 +24,10 @@ public class Plot {
     @Column(columnDefinition = "TEXT")
     private String polygonPoints;
 
+    // stores digitizer metadata as JSON, including the source sketch image and overlay data
+    @Column(columnDefinition = "TEXT")
+    private String digitizedDiagram;
+
     // links this plot to a farm
     @ManyToOne
     @JoinColumn(name = "farm_id")

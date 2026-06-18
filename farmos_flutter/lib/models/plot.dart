@@ -5,6 +5,7 @@ class Plot {
   final double areaM2;
   final double areaAcres;
   final String polygonPoints;
+  final String? digitizedDiagram;
   final Map<String, dynamic>? farm;
 
   Plot({
@@ -14,6 +15,7 @@ class Plot {
     required this.areaM2,
     required this.areaAcres,
     required this.polygonPoints,
+    this.digitizedDiagram,
     this.farm,
   });
 
@@ -25,6 +27,7 @@ class Plot {
       areaM2: (json['areaM2'] as num?)?.toDouble() ?? 0,
       areaAcres: (json['areaAcres'] as num?)?.toDouble() ?? 0,
       polygonPoints: json['polygonPoints'] ?? '[]',
+      digitizedDiagram: json['digitizedDiagram'],
       farm: json['farm'],
     );
   }

@@ -1,0 +1,16 @@
+# Local secrets and environment files
+.env
+.env.*
+!.env.example
+application-local.properties
+farmos/src/main/resources/application-local.properties
+farmos_flutter/lib/config/secrets.dart
+
+# Python caches
+__pycache__/
+*.py[cod]
+
+# Build outputs
+build/
+target/
+.dart_tool/

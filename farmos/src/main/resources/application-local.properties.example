@@ -1,0 +1,11 @@
+# Copy this file to application-local.properties for local-only settings.
+# Do not commit your real Hugging Face key.
+#
+# Preferred:
+# Set HUGGINGFACE_API_KEY in your OS environment instead of putting it here.
+#
+# Optional local fallback:
+# huggingface.api.key=<your-hugging-face-token>
+#
+# Optional model override:
+# huggingface.model.url=https://router.huggingface.co/hf-inference/models/linkanjarad/mobilenet_v2_1.0_224-plant-disease-identification
