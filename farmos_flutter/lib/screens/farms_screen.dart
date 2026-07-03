@@ -4,7 +4,14 @@ import '../models/farm.dart';
 import 'plots_screen.dart';
 
 class FarmsScreen extends StatefulWidget {
-  const FarmsScreen({super.key});
+  final int userId;
+  final String username;
+
+  const FarmsScreen({
+    super.key,
+    required this.userId,
+    required this.username,
+  });
 
   @override
   State<FarmsScreen> createState() => _FarmsScreenState();
@@ -36,7 +43,7 @@ class _FarmsScreenState extends State<FarmsScreen> {
 
   Future<void> fetchFarms() async {
     try {
-      final data = await ApiService.getFarms();
+      final data = await ApiService.getFarms(widget.userId);
       setState(() {
         farms = data.map((f) => Farm.fromJson(f)).toList();
         loading = false;
@@ -58,10 +65,14 @@ class _FarmsScreenState extends State<FarmsScreen> {
     if (acres == null) return;
 
     try {
-      final farmData = {'name': name, 'acres': acres, 'location': location};
+      final farmData = {
+        'name': name,
+        'acres': acres,
+        'location': location,
+      };
 
       if (editingFarm == null) {
-        await ApiService.createFarm(farmData);
+        await ApiService.createFarm(widget.userId, farmData);
       } else {
         await ApiService.updateFarm(editingFarm!.id, farmData);
       }
@@ -140,9 +151,9 @@ class _FarmsScreenState extends State<FarmsScreen> {
                           letterSpacing: 1.2,
                         ),
                       ),
-                      const Text(
+                      Text(
                         'Farm Management',
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 22,
                           fontWeight: FontWeight.w700,
                           color: Color(0xFF1B4332),
@@ -218,46 +229,48 @@ class _FarmsScreenState extends State<FarmsScreen> {
                     Row(
                       children: [
                         Expanded(
-                          child: GestureDetector(
-                            onTap: saveFarm,
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF1B4332),
-                                borderRadius: BorderRadius.circular(10),
+                          child: SizedBox(
+                            height: 48,
+                            child: ElevatedButton(
+                              onPressed: saveFarm,
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: const Color(0xFF1B4332),
+                                foregroundColor: Colors.white,
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                elevation: 0,
                               ),
-                              child: Center(
-                                child: Text(
-                                  editingFarm == null
-                                      ? 'Save Farm'
-                                      : 'Update Farm',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w600,
-                                    fontSize: 13,
-                                  ),
+                              child: Text(
+                                editingFarm == null
+                                    ? 'Save Farm'
+                                    : 'Update Farm',
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 13,
                                 ),
                               ),
                             ),
                           ),
                         ),
                         const SizedBox(width: 8),
-                        GestureDetector(
-                          onTap: clearForm,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 20,
-                              vertical: 12,
+                        SizedBox(
+                          height: 48,
+                          child: OutlinedButton(
+                            onPressed: clearForm,
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: Colors.grey.shade600,
+                              side: BorderSide(color: Colors.grey.shade300),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
                             ),
-                            decoration: BoxDecoration(
-                              border: Border.all(color: Colors.grey.shade300),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Text(
-                              'Cancel',
-                              style: TextStyle(
-                                color: Colors.grey.shade600,
-                                fontSize: 13,
+                            child: const Padding(
+                              padding: EdgeInsets.symmetric(horizontal: 12),
+                              child: Text(
+                                'Cancel',
+                                style: TextStyle(fontSize: 13),
                               ),
                             ),
                           ),
@@ -278,35 +291,35 @@ class _FarmsScreenState extends State<FarmsScreen> {
                       ),
                     )
                   : farms.isEmpty
-                  ? _EmptyState(onAdd: startNewFarm)
-                  : RefreshIndicator(
-                      color: const Color(0xFF1B4332),
-                      onRefresh: fetchFarms,
-                      child: ListView.builder(
-                        padding: const EdgeInsets.symmetric(horizontal: 20),
-                        itemCount: farms.length,
-                        itemBuilder: (context, index) {
-                          final farm = farms[index];
+                      ? _EmptyState(onAdd: startNewFarm)
+                      : RefreshIndicator(
+                          color: const Color(0xFF1B4332),
+                          onRefresh: fetchFarms,
+                          child: ListView.builder(
+                            padding: const EdgeInsets.symmetric(horizontal: 20),
+                            itemCount: farms.length,
+                            itemBuilder: (context, index) {
+                              final farm = farms[index];
 
-                          return GestureDetector(
-                            behavior: HitTestBehavior.opaque,
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (ctx) => PlotsScreen(farm: farm),
+                              return GestureDetector(
+                                behavior: HitTestBehavior.opaque,
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (ctx) => PlotsScreen(farm: farm),
+                                    ),
+                                  );
+                                },
+                                child: _FarmCard(
+                                  farm: farm,
+                                  onEdit: () => startEditFarm(farm),
+                                  onDelete: () => _confirmDelete(context, farm),
                                 ),
                               );
                             },
-                            child: _FarmCard(
-                              farm: farm,
-                              onEdit: () => startEditFarm(farm),
-                              onDelete: () => _confirmDelete(context, farm),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                          ),
+                        ),
             ),
           ],
         ),

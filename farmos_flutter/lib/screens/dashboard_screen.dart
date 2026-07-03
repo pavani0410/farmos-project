@@ -3,7 +3,14 @@ import '../api/api_service.dart';
 import '../models/farm.dart';
 
 class DashboardScreen extends StatefulWidget {
-  const DashboardScreen({super.key});
+  final int userId;
+  final String username;
+
+  const DashboardScreen({
+    super.key,
+    required this.userId,
+    required this.username,
+  });
 
   @override
   State<DashboardScreen> createState() => _DashboardScreenState();
@@ -22,7 +29,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
   Future<void> fetchData() async {
     try {
-      final data = await ApiService.getFarms();
+      final data = await ApiService.getFarms(widget.userId);
       final farmList = data.map((f) => Farm.fromJson(f)).toList();
       setState(() {
         farms = farmList;
@@ -87,8 +94,8 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                       color: Colors.grey.shade500,
                                     ),
                                   ),
-                                  const Text(
-                                    'Hi, Pavani',
+                                  Text(
+                                    'Hi, ${widget.username}',
                                     style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w700,

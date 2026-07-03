@@ -1,0 +1,9 @@
+ALTER TABLE farms
+ADD COLUMN IF NOT EXISTS user_id BIGINT;
+
+ALTER TABLE farms
+DROP CONSTRAINT IF EXISTS fk_farms_user;
+
+ALTER TABLE farms
+ADD CONSTRAINT fk_farms_user
+FOREIGN KEY (user_id) REFERENCES users(id);

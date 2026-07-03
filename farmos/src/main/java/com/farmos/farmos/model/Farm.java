@@ -3,16 +3,20 @@ package com.farmos.farmos.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
-@Data                  // auto generates getters, setters (Lombok does this)
-@Entity                // tells Spring "this is a database table"
-@Table(name = "farms") // the table will be called "farms" in PostgreSQL
+@Data
+@Entity
+@Table(name = "farms")
 public class Farm {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY) // auto increment ID
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String name;      // farm name
-    private Double acres;     // total acres
-    private String location;  // where the farm is
+    private String name;
+    private Double acres;
+    private String location;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }
