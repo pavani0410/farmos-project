@@ -1,11 +1,14 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
-// your Spring Boot server address
-// same as API_BASE_URL in React
-const String baseUrl = 'http://localhost:8081/api';
+const String _defaultBaseUrl = 'http://localhost:8081/api';
 
+const String baseUrl = String.fromEnvironment(
+  'API_BASE_URL',
+  defaultValue: _defaultBaseUrl,
+);
 class ApiService {
   // GET /api/farms
   static Future<List<dynamic>> getFarms() async {
