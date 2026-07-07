@@ -24,10 +24,12 @@ class _FarmsScreenState extends State<FarmsScreen> {
   bool loading = true;
   bool showForm = false;
   Farm? editingFarm;
+  String query = '';
 
   final nameController = TextEditingController();
   final acresController = TextEditingController();
   final locationController = TextEditingController();
+  final searchController = TextEditingController();
 
   @override
   void initState() {
@@ -41,6 +43,7 @@ class _FarmsScreenState extends State<FarmsScreen> {
     nameController.dispose();
     acresController.dispose();
     locationController.dispose();
+    searchController.dispose();
     super.dispose();
   }
 
@@ -131,6 +134,13 @@ class _FarmsScreenState extends State<FarmsScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final visibleFarms = farms.where((farm) {
+      final q = query.trim().toLowerCase();
+      if (q.isEmpty) return true;
+      return farm.name.toLowerCase().contains(q) ||
+          farm.location.toLowerCase().contains(q);
+    }).toList();
+
     return Scaffold(
       backgroundColor: const Color(0xFFF4F6F3),
       body: SafeArea(
@@ -183,6 +193,26 @@ class _FarmsScreenState extends State<FarmsScreen> {
                 ],
               ),
             ),
+
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20),
+              child: TextField(
+                controller: searchController,
+                onChanged: (value) => setState(() => query = value),
+                decoration: InputDecoration(
+                  hintText: 'Search farms',
+                  prefixIcon: const Icon(Icons.search_rounded),
+                  filled: true,
+                  fillColor: Colors.white,
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 14),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
 
             if (showForm)
               Container(
@@ -293,16 +323,16 @@ class _FarmsScreenState extends State<FarmsScreen> {
                         color: Color(0xFF1B4332),
                       ),
                     )
-                  : farms.isEmpty
+                  : visibleFarms.isEmpty
                       ? _EmptyState(onAdd: startNewFarm)
                       : RefreshIndicator(
                           color: const Color(0xFF1B4332),
                           onRefresh: fetchFarms,
                           child: ListView.builder(
                             padding: const EdgeInsets.symmetric(horizontal: 20),
-                            itemCount: farms.length,
+                            itemCount: visibleFarms.length,
                             itemBuilder: (context, index) {
-                              final farm = farms[index];
+                              final farm = visibleFarms[index];
 
                               return GestureDetector(
                                 behavior: HitTestBehavior.opaque,
@@ -351,6 +381,17 @@ class _FarmsScreenState extends State<FarmsScreen> {
         ],
       ),
     );
+  }
+
+  String _initials(String name) {
+    final parts = name
+        .trim()
+        .split(RegExp(r'\s+'))
+        .where((p) => p.isNotEmpty)
+        .toList();
+    if (parts.isEmpty) return '?';
+    if (parts.length == 1) return parts.first[0].toUpperCase();
+    return (parts.first[0] + parts.last[0]).toUpperCase();
   }
 }
 

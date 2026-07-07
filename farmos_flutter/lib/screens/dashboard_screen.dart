@@ -22,6 +22,21 @@ class _DashboardScreenState extends State<DashboardScreen> {
   bool loading = true;
   double totalAcres = 0;
   final List<_NotificationItem> notifications = const [
+    _NotificationItem(
+      title: 'Soil moisture alert',
+      message: 'North field needs irrigation soon.',
+      time: '12m ago',
+    ),
+    _NotificationItem(
+      title: 'New farm saved',
+      message: 'Your latest farm entry was created successfully.',
+      time: 'Today',
+    ),
+    _NotificationItem(
+      title: 'Leaf scan complete',
+      message: 'One crop scan is ready for review.',
+      time: '1h ago',
+    ),
     
   ];
 
@@ -505,19 +520,63 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                       const SizedBox(height: 24),
 
-                      // plot mapping section label
-                      Text(
-                        'PLOT MAPPING',
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w600,
-                          color: Colors.grey.shade500,
-                          letterSpacing: 1.2,
+                      const SizedBox(height: 12),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => FarmsScreen(
+                                userId: widget.userId,
+                                username: widget.username,
+                                initialShowForm: true,
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(18),
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(16),
+                            border: Border.all(color: Colors.grey.shade200),
+                          ),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 32,
+                                height: 32,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: const Color(0xFF1B4332).withValues(alpha: 0.1),
+                                ),
+                                child: const Icon(
+                                  Icons.add_rounded,
+                                  color: Color(0xFF1B4332),
+                                  size: 18,
+                                ),
+                              ),
+                              const SizedBox(width: 12),
+                              const Expanded(
+                                child: Text(
+                                  'Add New Farm',
+                                  style: TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.w600,
+                                    color: Color(0xFF1B4332),
+                                  ),
+                                ),
+                              ),
+                              Icon(
+                                Icons.chevron_right_rounded,
+                                color: Colors.grey.shade400,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
 
-                      const SizedBox(height: 10),
-                      // plot chips
                       const SizedBox(height: 24),
                     ],
                   ),

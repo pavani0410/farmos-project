@@ -88,6 +88,13 @@ class _PlotsScreenState extends State<PlotsScreen> {
   bool _closed = false;
   List<Offset> _polygon = [];
 
+  double _plotPerimeter(List<double> distances) =>
+      distances.fold(0.0, (a, b) => a + b);
+
+  double _plotAreaM2(List<Offset> points) => points.length >= 3
+      ? _polyArea(points)
+      : 0.0;
+
   @override
   void initState() {
     super.initState();
@@ -201,6 +208,14 @@ class _PlotsScreenState extends State<PlotsScreen> {
   }
 
   void _showPlotDiagram(_PlotData plot) {
+    _showPlotDiagramViewer(plot, allowMaximize: true);
+  }
+
+  void _showPlotDiagramViewer(
+    _PlotData plot, {
+    required bool allowMaximize,
+    bool fullscreen = false,
+  }) {
     final diagram = _decodeDigitizedDiagram(plot);
     final imageBase64 = diagram?['imageBytesBase64'] as String?;
     final imageBytes = imageBase64 == null
@@ -209,65 +224,210 @@ class _PlotsScreenState extends State<PlotsScreen> {
     final imageWidth = (diagram?['imageWidth'] as num?)?.toDouble();
     final imageHeight = (diagram?['imageHeight'] as num?)?.toDouble();
 
+    final perimeter = _plotPerimeter(plot.edgeDistances);
+    final areaM2 = _plotAreaM2(plot.points);
+    final acres = plot.areaAcres > 0 ? plot.areaAcres : areaM2 / 4046.86;
+
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-        title: Text(
-          plot.name,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w700,
-            color: Color(0xFF1B4332),
+      barrierColor: Colors.black.withValues(alpha: 0.72),
+      builder: (ctx) => Dialog(
+        insetPadding: EdgeInsets.all(fullscreen ? 12 : 20),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        child: Container(
+          width: fullscreen ? double.infinity : 820,
+          constraints: BoxConstraints(
+            maxWidth: fullscreen ? double.infinity : 980,
+            maxHeight: fullscreen ? double.infinity : 760,
           ),
-        ),
-        content: SizedBox(
-          width: 420,
-          child: AspectRatio(
-            aspectRatio:
-                imageWidth != null &&
-                    imageHeight != null &&
-                    imageWidth > 0 &&
-                    imageHeight > 0
-                ? imageWidth / imageHeight
-                : 1.4,
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12),
-              child: Container(
-                color: Colors.white,
-                child: Stack(
-                  fit: StackFit.expand,
+          decoration: BoxDecoration(
+            color: const Color(0xFFF5F1E8),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(18, 16, 12, 12),
+                child: Row(
                   children: [
-                    if (imageBytes != null)
-                      Image.memory(imageBytes, fit: BoxFit.fill),
-                    CustomPaint(
-                      painter: _SavedDiagramPainter(
-                        points: plot.points,
-                        edgeDistances: plot.edgeDistances,
-                        showDistanceLabels: true,
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF1B4332).withValues(alpha: 0.1),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Icon(
+                        Icons.route_rounded,
                         color: plot.color,
-                        fill: plot.fill,
-                        sourceSize:
-                            imageWidth != null &&
-                                imageHeight != null &&
-                                imageWidth > 0 &&
-                                imageHeight > 0
-                            ? Size(imageWidth, imageHeight)
-                            : null,
+                      ),
+                    ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            plot.name,
+                            style: const TextStyle(
+                              fontSize: 17,
+                              fontWeight: FontWeight.w800,
+                              color: Color(0xFF1B4332),
+                            ),
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            'Ready for later tree geo-tagging',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    if (allowMaximize)
+                      IconButton(
+                        tooltip: fullscreen
+                            ? 'Exit maximize'
+                            : 'Maximize saved plot',
+                        onPressed: () {
+                          Navigator.pop(ctx);
+                          _showPlotDiagramViewer(
+                            plot,
+                            allowMaximize: true,
+                            fullscreen: !fullscreen,
+                          );
+                        },
+                        icon: Icon(
+                          fullscreen
+                              ? Icons.fullscreen_exit_rounded
+                              : Icons.fullscreen_rounded,
+                          color: const Color(0xFF1B4332),
+                        ),
+                      ),
+                    IconButton(
+                      tooltip: 'Close',
+                      onPressed: () => Navigator.pop(ctx),
+                      icon: const Icon(
+                        Icons.close_rounded,
+                        color: Color(0xFF1B4332),
                       ),
                     ),
                   ],
                 ),
               ),
-            ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.fromLTRB(18, 0, 18, 10),
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      return Column(
+                        children: [
+                          Expanded(
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(16),
+                              child: Container(
+                                color: const Color(0xFFF7F4EE),
+                                child: Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    if (imageBytes != null)
+                                      Image.memory(imageBytes, fit: BoxFit.fill),
+                                    CustomPaint(
+                                      painter: _SavedDiagramPainter(
+                                        points: plot.points,
+                                        edgeDistances: plot.edgeDistances,
+                                        showDistanceLabels: true,
+                                        color: plot.color,
+                                        fill: plot.fill,
+                                        sourceSize:
+                                            imageWidth != null &&
+                                                imageHeight != null &&
+                                                imageWidth > 0 &&
+                                                imageHeight > 0
+                                            ? Size(imageWidth, imageHeight)
+                                            : null,
+                                      ),
+                                    ),
+                                    Positioned(
+                                      right: 14,
+                                      top: 14,
+                                      child: _DiagramBadge(
+                                        label: '${plot.points.length} corners',
+                                        icon: Icons.polyline_rounded,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 12),
+                          Row(
+                            children: [
+                              _DiagramStat(
+                                label: 'Perimeter',
+                                value: '${perimeter.toStringAsFixed(1)} m',
+                              ),
+                              const SizedBox(width: 8),
+                              _DiagramStat(
+                                label: 'Area',
+                                value: '${areaM2.round()} m²',
+                              ),
+                              const SizedBox(width: 8),
+                              _DiagramStat(
+                                label: 'Acres',
+                                value: acres.toStringAsFixed(3),
+                              ),
+                              const SizedBox(width: 8),
+                              _DiagramStat(
+                                label: 'Trees later',
+                                value: 'Geo-tag ready',
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 10),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 14,
+                              vertical: 12,
+                            ),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.92),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: Colors.grey.shade200),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(
+                                  Icons.place_rounded,
+                                  color: plot.color,
+                                  size: 18,
+                                ),
+                                const SizedBox(width: 8),
+                                Expanded(
+                                  child: Text(
+                                    'Saved polygon can be used as the base layer when you start marking trees on this plot.',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.grey.shade700,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Close'),
-          ),
-        ],
       ),
     );
   }
@@ -955,7 +1115,7 @@ class _PlotsScreenState extends State<PlotsScreen> {
                           itemCount: _plots.length,
                           itemBuilder: (ctx, i) {
                             final plot = _plots[i];
-                            return GestureDetector(
+                                    return GestureDetector(
                               onTap: () => _showPlotDiagram(plot),
                               child: Container(
                                 width: 170,
@@ -1012,14 +1172,48 @@ class _PlotsScreenState extends State<PlotsScreen> {
                                         child: Container(
                                           width: double.infinity,
                                           color: const Color(0xFFF4F6F3),
-                                          child: CustomPaint(
-                                            painter: _SavedDiagramPainter(
-                                              points: plot.points,
-                                              edgeDistances: const [],
-                                              showDistanceLabels: false,
-                                              color: plot.color,
-                                              fill: plot.fill,
-                                            ),
+                                          child: Stack(
+                                            children: [
+                                              Positioned.fill(
+                                                child: CustomPaint(
+                                                  painter: _SavedDiagramPainter(
+                                                    points: plot.points,
+                                                    edgeDistances:
+                                                        plot.edgeDistances,
+                                                    showDistanceLabels: true,
+                                                    color: plot.color,
+                                                    fill: plot.fill,
+                                                  ),
+                                                ),
+                                              ),
+                                              Positioned(
+                                                right: 6,
+                                                top: 6,
+                                                child: GestureDetector(
+                                                  onTap: () =>
+                                                      _showPlotDiagram(plot),
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.all(
+                                                          5,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.white
+                                                          .withValues(alpha: 0.88),
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            8,
+                                                          ),
+                                                    ),
+                                                    child: Icon(
+                                                      Icons.fullscreen_rounded,
+                                                      size: 14,
+                                                      color: plot.color,
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),
@@ -1029,7 +1223,7 @@ class _PlotsScreenState extends State<PlotsScreen> {
                                       children: [
                                         Expanded(
                                           child: Text(
-                                            plot.soilType,
+                                            '${plot.soilType} • ${plot.points.length} pts',
                                             style: TextStyle(
                                               fontSize: 10,
                                               color: Colors.grey.shade500,
@@ -1359,6 +1553,83 @@ class _AreaChip extends StatelessWidget {
           style: TextStyle(fontSize: 10, color: Colors.grey.shade500),
         ),
       ],
+    );
+  }
+}
+
+class _DiagramStat extends StatelessWidget {
+  final String label;
+  final String value;
+  const _DiagramStat({required this.label, required this.value});
+
+  @override
+  Widget build(BuildContext context) {
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: Colors.grey.shade200),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              label,
+              style: TextStyle(fontSize: 10, color: Colors.grey.shade500),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              value,
+              style: const TextStyle(
+                fontSize: 13,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF1B4332),
+              ),
+              overflow: TextOverflow.ellipsis,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _DiagramBadge extends StatelessWidget {
+  final String label;
+  final IconData icon;
+  const _DiagramBadge({required this.label, required this.icon});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white.withValues(alpha: 0.94),
+        borderRadius: BorderRadius.circular(999),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.08),
+            blurRadius: 8,
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(icon, size: 14, color: const Color(0xFF1B4332)),
+          const SizedBox(width: 6),
+          Text(
+            label,
+            style: const TextStyle(
+              fontSize: 10,
+              fontWeight: FontWeight.w700,
+              color: Color(0xFF1B4332),
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
