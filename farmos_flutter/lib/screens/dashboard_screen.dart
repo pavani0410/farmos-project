@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../api/api_service.dart';
 import '../models/farm.dart';
+import 'login_screen.dart';
 import 'farms_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -126,7 +127,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                             ],
                           ),
                           GestureDetector(
-                            onTap: () => _showNotifications(context),
+                            onTap: () => _logout(context),
                             child: Container(
                               width: 40,
                               height: 40,
@@ -141,7 +142,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                 ],
                               ),
                               child: Icon(
-                                Icons.notifications_outlined,
+                                Icons.logout_rounded,
                                 size: 20,
                                 color: Colors.grey.shade600,
                               ),
@@ -655,6 +656,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  void _logout(BuildContext context) {
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+      (route) => false,
     );
   }
 
