@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../api/api_service.dart';
 import '../models/farm.dart';
+import 'farms_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   final int userId;
@@ -20,6 +21,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   List<Farm> farms = [];
   bool loading = true;
   double totalAcres = 0;
+  final List<_NotificationItem> notifications = const [
+    
+  ];
 
   @override
   void initState() {
@@ -72,10 +76,10 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   shape: BoxShape.circle,
                                   color: const Color(0xFF1B4332),
                                 ),
-                                child: const Center(
+                                child: Center(
                                   child: Text(
-                                    'RV',
-                                    style: TextStyle(
+                                    _initials(widget.username),
+                                    style: const TextStyle(
                                       color: Colors.white,
                                       fontWeight: FontWeight.w700,
                                       fontSize: 14,
@@ -106,23 +110,26 @@ class _DashboardScreenState extends State<DashboardScreen> {
                               ),
                             ],
                           ),
-                          Container(
-                            width: 40,
-                            height: 40,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withValues(alpha: 0.06),
-                                  blurRadius: 8,
-                                ),
-                              ],
-                            ),
-                            child: Icon(
-                              Icons.notifications_outlined,
-                              size: 20,
-                              color: Colors.grey.shade600,
+                          GestureDetector(
+                            onTap: () => _showNotifications(context),
+                            child: Container(
+                              width: 40,
+                              height: 40,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withValues(alpha: 0.06),
+                                    blurRadius: 8,
+                                  ),
+                                ],
+                              ),
+                              child: Icon(
+                                Icons.notifications_outlined,
+                                size: 20,
+                                color: Colors.grey.shade600,
+                              ),
                             ),
                           ),
                         ],
@@ -361,6 +368,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                                   final farm = entry.value;
                                   final initials = farm.name
                                       .split(' ')
+                                      .where((w) => w.isNotEmpty)
                                       .take(2)
                                       .map((w) => w[0].toUpperCase())
                                       .join();
@@ -441,7 +449,18 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                       // add new farm button
                       GestureDetector(
-                        onTap: () {},
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => FarmsScreen(
+                                userId: widget.userId,
+                                username: widget.username,
+                                initialShowForm: true,
+                              ),
+                            ),
+                          );
+                        },
                         child: Container(
                           width: double.infinity,
                           padding: const EdgeInsets.all(18),
@@ -498,7 +517,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ),
 
                       const SizedBox(height: 10),
-
                       // plot chips
                       const SizedBox(height: 24),
                     ],
@@ -508,4 +526,94 @@ class _DashboardScreenState extends State<DashboardScreen> {
       ),
     );
   }
+
+  void _showNotifications(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
+      builder: (ctx) => Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              width: 44,
+              height: 4,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade300,
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 16),
+            const Text(
+              'Notifications',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: Color(0xFF1B4332)),
+            ),
+            const SizedBox(height: 14),
+            ...notifications.map(
+              (item) => Container(
+                margin: const EdgeInsets.only(bottom: 12),
+                padding: const EdgeInsets.all(14),
+                decoration: BoxDecoration(
+                  color: const Color(0xFFF7F9F6),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: 10,
+                      height: 10,
+                      margin: const EdgeInsets.only(top: 5),
+                      decoration: const BoxDecoration(
+                        color: Color(0xFF52B788),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                    const SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            item.title,
+                            style: const TextStyle(fontWeight: FontWeight.w700, color: Color(0xFF1B4332)),
+                          ),
+                          const SizedBox(height: 4),
+                          Text(item.message, style: TextStyle(color: Colors.grey.shade600, fontSize: 12)),
+                        ],
+                      ),
+                    ),
+                    Text(item.time, style: TextStyle(color: Colors.grey.shade400, fontSize: 11)),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _initials(String name) {
+    final parts = name
+        .trim()
+        .split(RegExp(r'\s+'))
+        .where((p) => p.isNotEmpty)
+        .toList();
+    if (parts.isEmpty) return 'F';
+    if (parts.length == 1) return parts.first[0].toUpperCase();
+    return (parts.first[0] + parts.last[0]).toUpperCase();
+  }
+}
+
+class _NotificationItem {
+  final String title;
+  final String message;
+  final String time;
+  const _NotificationItem({required this.title, required this.message, required this.time});
 }

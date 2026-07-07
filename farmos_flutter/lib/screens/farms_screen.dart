@@ -6,11 +6,13 @@ import 'plots_screen.dart';
 class FarmsScreen extends StatefulWidget {
   final int userId;
   final String username;
+  final bool initialShowForm;
 
   const FarmsScreen({
     super.key,
     required this.userId,
     required this.username,
+    this.initialShowForm = false,
   });
 
   @override
@@ -30,6 +32,7 @@ class _FarmsScreenState extends State<FarmsScreen> {
   @override
   void initState() {
     super.initState();
+    showForm = widget.initialShowForm;
     fetchFarms();
   }
 
