@@ -37,6 +37,8 @@ dependencies:
   # image picker for leaf detection
   image_picker: ^1.0.7
   
+  #url_launcher
+  url_launcher: ^6.3.1
   # store data locally (remember selected farm etc)
   shared_preferences: ^2.2.3
   
@@ -45,6 +47,8 @@ dependencies:
   image_picker_web: ^3.0.1
   http_parser: ^4.0.2
 
+  flutter_appauth: ^12.0.2
+  flutter_secure_storage: ^9.2.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
