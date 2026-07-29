@@ -9,11 +9,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.auth0.jwt.interfaces.DecodedJWT;
-import com.farmos.farmos.model.User;
-import com.farmos.farmos.repository.UserRepository;
-import com.farmos.farmos.service.CognitoTokenValidator;
-
+import java.util.Map;
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {

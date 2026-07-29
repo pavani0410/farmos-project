@@ -21,6 +21,8 @@ public class FarmController {
     public List<Farm> getAllFarms(@RequestParam Long userId) {
         return farmService.getAllFarmsForUser(userId);
     }
+    
+
 
     @PostMapping
     public ResponseEntity<Farm> createFarm(
