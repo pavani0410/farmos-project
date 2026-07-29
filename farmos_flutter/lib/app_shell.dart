@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'screens/dashboard_screen.dart';
 import 'screens/farms_screen.dart';
 import 'screens/leaf_detection_screen.dart';
+import 'auth/auth_service.dart';
+import 'screens/login_screen.dart';
 
 class AppShell extends StatefulWidget {
   final int userId;
@@ -26,9 +28,63 @@ class _AppShellState extends State<AppShell> {
     const LeafDetectionScreen(),
   ];
 
+  Future<void> _confirmSignOut(BuildContext context) async {
+    final confirmed = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Sign out?'),
+        content: const Text('You will need to log in again to continue.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, false),
+            child: const Text('Cancel'),
+          ),
+          TextButton(
+            onPressed: () => Navigator.pop(ctx, true),
+            child: const Text('Sign out'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmed != true) return;
+
+    try {
+      await AuthService.logout();
+    } catch (_) {
+      // Even if the Cognito logout call fails (e.g. no network),
+      // still proceed to clear local app state below.
+    }
+
+    if (!mounted) return;
+    Navigator.of(context).pushAndRemoveUntil(
+      MaterialPageRoute(builder: (_) => const LoginScreen()),
+      (route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: Text(
+          'Hi, ${widget.username}',
+          style: const TextStyle(
+            color: Color(0xFF1B4332),
+            fontWeight: FontWeight.w700,
+            fontSize: 16,
+          ),
+        ),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.logout_rounded, color: Color(0xFF1B4332)),
+            tooltip: 'Sign out',
+            onPressed: () => _confirmSignOut(context),
+          ),
+        ],
+      ),
       body: _screens[_selectedIndex],
       bottomNavigationBar: Container(
         decoration: BoxDecoration(

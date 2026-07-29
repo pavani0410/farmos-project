@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'screens/login_screen.dart';
+// ignore: unused_import
 import 'app_shell.dart';
 
 void main() {

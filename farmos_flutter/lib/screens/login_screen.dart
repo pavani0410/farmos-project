@@ -1,5 +1,5 @@
+import '../auth/auth_service.dart';
 import 'package:flutter/material.dart';
-
 import '../api/api_service.dart';
 import '../app_shell.dart';
 
@@ -17,6 +17,7 @@ class _LoginScreenState extends State<LoginScreen> {
   final passwordController = TextEditingController();
 
   bool loading = false;
+  bool amazonLoading = false;
   String? errorMessage;
   AuthMode mode = AuthMode.login;
 
@@ -62,6 +63,45 @@ class _LoginScreenState extends State<LoginScreen> {
     } finally {
       if (mounted) {
         setState(() => loading = false);
+      }
+    }
+  }
+
+  Future<void> signInWithAmazon() async {
+    if (amazonLoading) return;
+
+    setState(() {
+      amazonLoading = true;
+      errorMessage = null;
+    });
+
+    try {
+      final result = await AuthService.login(forceFresh: true);
+      if (result?.idToken == null) {
+        throw Exception('Amazon sign-in did not return an ID token');
+      }
+
+      final data = await AuthService.exchangeWithBackend(result!.idToken!);
+
+      if (!mounted) return;
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (_) => AppShell(
+            userId: data['id'] as int,
+            username: data['username'] as String,
+          ),
+        ),
+      );
+    } catch (e) {
+      if (mounted) {
+        setState(() {
+          errorMessage = e.toString().replaceFirst('Exception: ', '');
+        });
+      }
+    } finally {
+      if (mounted) {
+        setState(() => amazonLoading = false);
       }
     }
   }
@@ -221,6 +261,30 @@ class _LoginScreenState extends State<LoginScreen> {
                               : Text(isLogin ? 'Login' : 'Create Account'),
                         ),
                       ),
+
+                      const SizedBox(height: 16),
+
+                      SizedBox(
+                        height: 52,
+                        child: OutlinedButton.icon(
+                          onPressed: amazonLoading ? null : signInWithAmazon,
+                          icon: amazonLoading
+                              ? const SizedBox(
+                                  width: 18,
+                                  height: 18,
+                                  child: CircularProgressIndicator(
+                                    strokeWidth: 2,
+                                  ),
+                                )
+                              : const Icon(Icons.login),
+                          label: Text(
+                            amazonLoading
+                                ? "Signing in..."
+                                : "Continue with Amazon",
+                          ),
+                        ),
+                      ),
+
                       const SizedBox(height: 12),
                       Text(
                         'Grow and Manage',

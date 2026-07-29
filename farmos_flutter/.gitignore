@@ -44,10 +44,16 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
+# Spring Boot / Maven
+farmos/target/
+*.jar
+*.war
+
+# Local-only secrets / config (never commit these)
+application-local.properties
+farmos/src/main/resources/application-local.properties
+.env
+farmos_flutter/.env
+
 # API Keys
-# farmos_flutter/.env
 farmos_flutter/lib/config/secrets.dart
-.gitignore
-
-
-

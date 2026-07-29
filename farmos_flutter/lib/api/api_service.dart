@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 
-const String _defaultBaseUrl = 'http://localhost:8081/api';
+const String _defaultBaseUrl = 'http://192.168.4.84:8081/api';
 
 const String baseUrl = String.fromEnvironment(
   'API_BASE_URL',

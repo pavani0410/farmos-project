@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../api/api_service.dart';
 import '../models/farm.dart';
-import 'login_screen.dart';
 import 'farms_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
@@ -79,79 +78,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // top bar
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              Container(
-                                width: 44,
-                                height: 44,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: const Color(0xFF1B4332),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    _initials(widget.username),
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 14,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 12),
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    'FarmOS · Dashboard',
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      color: Colors.grey.shade500,
-                                    ),
-                                  ),
-                                  Text(
-                                    'Hi, ${widget.username}',
-                                    style: TextStyle(
-                                      fontSize: 18,
-                                      fontWeight: FontWeight.w700,
-                                      color: Color(0xFF1B4332),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          GestureDetector(
-                            onTap: () => _logout(context),
-                            child: Container(
-                              width: 40,
-                              height: 40,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                color: Colors.white,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.06),
-                                    blurRadius: 8,
-                                  ),
-                                ],
-                              ),
-                              child: Icon(
-                                Icons.logout_rounded,
-                                size: 20,
-                                color: Colors.grey.shade600,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      const SizedBox(height: 24),
+                      const SizedBox(height: 8),
 
                       // overview label
                       Text(
@@ -656,14 +583,6 @@ class _DashboardScreenState extends State<DashboardScreen> {
           ],
         ),
       ),
-    );
-  }
-
-  void _logout(BuildContext context) {
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (_) => const LoginScreen()),
-      (route) => false,
     );
   }
 
